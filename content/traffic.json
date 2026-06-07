@@ -1,17 +1,23 @@
 {
-  "totalPageViews": 6,
+  "totalPageViews": 7,
   "uniqueVisitors": 2,
   "byPath": {
     "/": 2,
     "/posts/2026-05-28-god-you-know-best-may-27-2026": 1,
     "/admin": 1,
     "/posts/2025-10-25-home-home-october-26-2025": 1,
-    "/posts/2025-04-19-april-19-2025-pressure-in-increments": 1
+    "/posts/2025-04-19-april-19-2025-pressure-in-increments": 1,
+    "/posts/2026-05-09-dichotomy-if-i-m-being-honest-may-11-2026": 1
   },
   "byDay": {
-    "2026-06-07": 6
+    "2026-06-07": 7
   },
   "recent": [
+    {
+      "path": "/posts/2026-05-09-dichotomy-if-i-m-being-honest-may-11-2026",
+      "at": "2026-06-07T13:24:11.533Z",
+      "visitorId": "8171a96b-83df-49b3-9a25-b0027cfec338"
+    },
     {
       "path": "/posts/2025-04-19-april-19-2025-pressure-in-increments",
       "at": "2026-06-07T13:22:25.667Z",
