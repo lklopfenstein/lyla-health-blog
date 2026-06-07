@@ -10,7 +10,7 @@ function formatNumber(value?: number) {
 
 function formatDate(date?: string) {
   if (!date) return "Ready";
-  return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date(date));
+  return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(date));
 }
 
 export default function Home() {
