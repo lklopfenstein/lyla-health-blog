@@ -1,3 +1,33 @@
+function spotifyEmbedUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname !== "open.spotify.com") return null;
+    const [kind, id] = parsed.pathname.split("/").filter(Boolean);
+    if (!kind || !id || !["album", "episode", "playlist", "show", "track"].includes(kind)) return null;
+    return `https://open.spotify.com/embed/${kind}/${id}`;
+  } catch {
+    return null;
+  }
+}
+
+function SpotifyEmbed({ url }: { url: string }) {
+  const embedUrl = spotifyEmbedUrl(url);
+  if (!embedUrl) return null;
+
+  return (
+    <div className="spotify-embed">
+      <iframe
+        title="Spotify player"
+        src={embedUrl}
+        width="100%"
+        height="152"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      />
+    </div>
+  );
+}
+
 function inline(text: string) {
   const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|https?:\/\/[^\s]+)/g);
   return parts.map((part, index) => {
@@ -12,6 +42,7 @@ function inline(text: string) {
 
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link) {
+      if (spotifyEmbedUrl(link[2])) return <SpotifyEmbed key={index} url={link[2]} />;
       return (
         <a key={index} href={link[2]} target="_blank" rel="noreferrer">
           {link[1]}
@@ -20,6 +51,7 @@ function inline(text: string) {
     }
 
     if (/^https?:\/\//.test(part)) {
+      if (spotifyEmbedUrl(part)) return <SpotifyEmbed key={index} url={part} />;
       return (
         <a key={index} href={part} target="_blank" rel="noreferrer">
           {part}
@@ -38,6 +70,7 @@ export function Markdown({ body }: { body: string }) {
     <div className="prose">
       {blocks.map((block, index) => {
         const trimmed = block.trim();
+        if (spotifyEmbedUrl(trimmed)) return <SpotifyEmbed key={index} url={trimmed} />;
         if (trimmed.startsWith("### ")) return <h3 key={index}>{inline(trimmed.slice(4))}</h3>;
         if (trimmed.startsWith("## ")) return <h2 key={index}>{inline(trimmed.slice(3))}</h2>;
         if (trimmed.startsWith("# ")) return <h2 key={index}>{inline(trimmed.slice(2))}</h2>;

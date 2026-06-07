@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "import:caringbridge": "node scripts/import-caringbridge.mjs"
+    "import:caringbridge": "node scripts/import-caringbridge.mjs",
+    "localize:archive-images": "node scripts/localize-archive-images.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

@@ -2,11 +2,11 @@
 title: "A Timely Blessing and Hope - October 17, 2025"
 date: "2025-09-13T22:20:56.083Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "63a31e24-2b6d-48f2-b5a1-a16e44754044"
-commentsImported: 3
+legacyCommentCount: 3
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/u0zjkeswzp392r27cmqr"
+coverImage: "/archive-images/bdcad92b3bdc2371.jpg"
 ---
 Catching up here... This whole journaling thing has a bit of a snowballing effect - the longer I go without sharing, the more stuff there is to share. When the posts are going to be larger, it's harder to find the time to sit down and write it all out. But here we are - and here we go... :) 
 
@@ -49,12 +49,12 @@ Still, climbing and if the ram don't show, You're faithful still..."
 
 Hope everyone is well. Thanks for taking the time to read my ramblings :) I can only hope that either because of me and my family or in spite of me and my family, it shows you the love of Jesus.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/u0zjkeswzp392r27cmqr)
+![Photo 1](/archive-images/bdcad92b3bdc2371.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/xmycbkcvccmonyqhy0a3)
+![Photo 2](/archive-images/7ff7a1b4f9089471.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/hnjnivjausrl06upw2wt)
+![Photo 3](/archive-images/38f601009e879ae8.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/tuphoagwqttosf4jplzc)
+![Photo 4](/archive-images/5ac68facaddd72da.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/gpynjgu6dtgc2snkdkbc)
+![Photo 5](/archive-images/a5b623bafed18e95.jpg)

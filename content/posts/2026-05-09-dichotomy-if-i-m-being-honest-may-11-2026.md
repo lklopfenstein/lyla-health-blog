@@ -2,11 +2,11 @@
 title: "Dichotomy/If I'm Being Honest... - May 11, 2026"
 date: "2026-05-09T20:09:43.457Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "078ba2f6-6eb5-4ac0-85a9-944b5897249a"
-commentsImported: 6
+legacyCommentCount: 6
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/p6qwfvqqyltvwerfnrig"
+coverImage: "/archive-images/6c79a1a723fe5518.jpg"
 ---
 Wow.  This is the first post in... over 5 months.  Perhaps I should start with an apology.
 
@@ -52,10 +52,10 @@ John 15:5-8 - “I am the vine; you are the branches. If you remain in me and I 
 _**Prayer**:
 God, help me to see the beauty of You and Your love for the world in both the normal parts of life and the extreme.  Help me depend fully on You and remain in You always. I love You.  Amen.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/p6qwfvqqyltvwerfnrig)
+![Photo 1](/archive-images/6c79a1a723fe5518.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/ckcpvg7rfovjt4gva0td)
+![Photo 2](/archive-images/a0dbd04cf8255d1d.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/e7qte2dtvdw7tesxelrl)
+![Photo 3](/archive-images/fa3125382fdd92fa.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/ak8w60gsc7ipwie3ww1j)
+![Photo 4](/archive-images/3f5f7621b5858f00.jpg)

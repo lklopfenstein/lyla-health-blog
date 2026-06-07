@@ -1,0 +1,29 @@
+{
+  "totalPageViews": 3,
+  "uniqueVisitors": 1,
+  "byPath": {
+    "/": 1,
+    "/posts/2026-05-28-god-you-know-best-may-27-2026": 1,
+    "/admin": 1
+  },
+  "byDay": {
+    "2026-06-07": 3
+  },
+  "recent": [
+    {
+      "path": "/admin",
+      "at": "2026-06-07T13:14:23.804Z",
+      "visitorId": "488c4a86-cddb-4461-9268-ef7c2e3b3e3b"
+    },
+    {
+      "path": "/posts/2026-05-28-god-you-know-best-may-27-2026",
+      "at": "2026-06-07T13:14:22.448Z",
+      "visitorId": "488c4a86-cddb-4461-9268-ef7c2e3b3e3b"
+    },
+    {
+      "path": "/",
+      "at": "2026-06-07T13:14:20.594Z",
+      "visitorId": "488c4a86-cddb-4461-9268-ef7c2e3b3e3b"
+    }
+  ]
+}

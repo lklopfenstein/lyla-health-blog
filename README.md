@@ -1,15 +1,6 @@
 # Lyla Klopfenstein Health Blog
 
-A free, GitHub-backed, Vercel-hosted replacement for the CaringBridge site.
-
-## What Is Included
-
-- 74 historical CaringBridge posts imported into `content/posts`.
-- Static Next.js pages for fast, free Vercel hosting.
-- Searchable archive and individual shareable post links.
-- Photo support through Markdown image syntax.
-- Free reader comments through GitHub Issues and Utterances.
-- Browser-based author studio at `/studio` for saving drafts, publishing posts, and uploading images through GitHub.
+A free family journal with a searchable archive, photo-rich posts, open comments, email subscriptions, private drafting, and a small admin dashboard.
 
 ## Local Development
 
@@ -20,30 +11,35 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Import CaringBridge Again
+## Content
+
+- Published updates live in `content/posts`.
+- Drafts live in `content/drafts`.
+- Reader comments live in `content/comments`.
+- Subscribers live in `content/subscribers.json`.
+- Basic traffic totals live in `content/traffic.json`.
+- Uploaded images live in `public/uploads`.
+
+## Private Admin
+
+Open `/admin` and sign in with the configured admin password. The dashboard can publish posts, save drafts, upload images, view subscribers, and see basic traffic totals.
+
+Required environment values:
 
 ```bash
-npm run import:caringbridge
+ADMIN_PASSWORD=
+ADMIN_SECRET=
+CONTENT_REPO=
+CONTENT_BRANCH=main
+CONTENT_TOKEN=
+SITE_URL=
 ```
 
-The importer reads the public CaringBridge feed and rewrites Markdown files in `content/posts`.
+Optional email notifications:
 
-## Author Studio
+```bash
+RESEND_API_KEY=
+EMAIL_FROM=
+```
 
-Set `NEXT_PUBLIC_GITHUB_REPO` to the final `owner/repo` value in Vercel and locally if needed. Then open `/studio`, paste a fine-grained GitHub token with **Contents: Read and write**, and use:
-
-- `Save draft` to commit Markdown into `content/drafts`.
-- `Publish` to commit Markdown into `content/posts`.
-- `Add image` to commit files into `public/uploads` and insert Markdown.
-
-The token is stored only in the browser's local storage.
-
-## Comments
-
-Comments use the free [Utterances](https://utteranc.es/) GitHub app.
-
-1. Enable GitHub Issues for the repo.
-2. Install Utterances for the repo.
-3. Set `NEXT_PUBLIC_GITHUB_REPO` in Vercel to `owner/repo`.
-
-Each post gets its own GitHub issue thread.
+When email is connected, publishing a post can notify subscribers automatically.

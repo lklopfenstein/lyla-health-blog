@@ -2,11 +2,11 @@
 title: "April 19, 2025 - Pressure in Increments"
 date: "2025-04-19T21:28:19.447Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "7972384e-b32e-42cc-8308-75bf90685ea1"
-commentsImported: 4
+legacyCommentCount: 4
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/d0yx3kq66c7vaxfnm938"
+coverImage: "/archive-images/994d5c4e946aceac.jpg"
 ---
 Wow.  It's been two months since the last update??  How is that possible?  Please forgive me as there's still a lot on our plate! :) 
 
@@ -57,6 +57,6 @@ God, please take my humble and completely inadequate words and use them in some 
 
 As always, don't follow me... Follow God! :) Love you all.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/d0yx3kq66c7vaxfnm938)
+![Photo 1](/archive-images/994d5c4e946aceac.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/zmwcjslz7dtzdqwtxg69)
+![Photo 2](/archive-images/8757976121820b27.jpg)

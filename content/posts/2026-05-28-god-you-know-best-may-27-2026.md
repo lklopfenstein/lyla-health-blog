@@ -2,11 +2,11 @@
 title: "God, You Know Best - May 27, 2026"
 date: "2026-05-28T02:10:25.136Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "a80ad772-b03d-483b-badb-70d6d920bd4b"
-commentsImported: 14
+legacyCommentCount: 14
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/cyhfy5d3xuw1ewyeubft"
+coverImage: "/archive-images/339e4699a1b757de.jpg"
 ---
 **Prayer to Start:**
 God, make Your name great above all else, even if that comes at the expense of my intelligence, dignity, pride, whatever... If you can use these words to bring someone closer to You, then so be it - I pray that furthering Your kingdom always matters more to me than my own comfort.  God, take away my own words and use Your own.  Help me get out of the way and simply use this humble little site to put Your love and mercy on full display.
@@ -44,6 +44,6 @@ In our situation, God has been faithful all along, no matter how much pain has b
 
 ... and if she's unable to raise her own right hand in worship, give me the boldness to stand in the gap and raise my own.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/cyhfy5d3xuw1ewyeubft)
+![Photo 1](/archive-images/339e4699a1b757de.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/qruya9ycjrqteneen4fi)
+![Photo 2](/archive-images/53e333facf75ca4f.jpg)

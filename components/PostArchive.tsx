@@ -50,7 +50,7 @@ export function PostArchive({ posts }: { posts: Post[] }) {
                 <h3>{post.title}</h3>
                 <p>{post.excerpt}</p>
                 <div className="meta">
-                  <MessageCircle size={14} aria-hidden /> {post.commentsImported || 0} CaringBridge comments imported as a count
+                  <MessageCircle size={14} aria-hidden /> Open comments
                 </div>
               </div>
             </Link>
@@ -58,7 +58,7 @@ export function PostArchive({ posts }: { posts: Post[] }) {
         </div>
         {posts.length === 0 ? (
           <div className="notice">
-            No posts have been imported yet. Run <strong>npm run import:caringbridge</strong> to bring in the public CaringBridge history.
+            No posts have been added yet. Open the private admin area to publish the first update.
           </div>
         ) : null}
       </div>

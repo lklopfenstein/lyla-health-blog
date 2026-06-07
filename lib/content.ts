@@ -10,7 +10,7 @@ export type Post = {
   excerpt: string;
   coverImage?: string;
   source?: string;
-  commentsImported?: number;
+  legacyCommentCount?: number;
   pinned?: boolean;
 };
 
@@ -79,7 +79,7 @@ export function getAllPosts(): Post[] {
         excerpt,
         coverImage: String(data.coverImage || imageFromBody(body) || ""),
         source: String(data.source || ""),
-        commentsImported: Number(data.commentsImported || 0),
+        legacyCommentCount: Number(data.legacyCommentCount || data.commentsImported || 0),
         pinned: Boolean(data.pinned)
       };
     })
@@ -96,11 +96,11 @@ export function getPost(slug: string) {
 export function getSiteMeta() {
   const siteFile = path.join(process.cwd(), "content", "site.json");
   if (!fs.existsSync(siteFile)) {
-    return { title: "Lyla Klopfenstein", visitsImportedFromCaringBridge: 0 };
+    return { title: "Lyla Klopfenstein", visitsImportedFromPreviousSite: 0 };
   }
   return JSON.parse(fs.readFileSync(siteFile, "utf8")) as {
     title: string;
-    visitsImportedFromCaringBridge?: number;
+    visitsImportedFromPreviousSite?: number;
     importedAt?: string;
   };
 }

@@ -2,9 +2,9 @@
 title: "January 1, 2025 - A Long December/Tis So Sweet"
 date: "2025-01-01T16:55:48.487Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "4f00202b-bc66-4497-958b-f4306cc88db7"
-commentsImported: 20
+legacyCommentCount: 20
 pinned: false
 coverImage: ""
 ---
@@ -49,7 +49,7 @@ He'll be with me 'til the end"
 Thank you to everyone who has remained unified in prayer.  I continue to pray each day at noon (and am trying to double down on prayer even more by doing 6am, noon, 6pm, and midnight if I'm still awake at those times).  
 
 **Two final bits of info:** 
-Just a reminder that "Donations" on this platform don't go to us - it's CaringBridge asking for money for their platform.  I took down everything I could in regards to transfer of money because I didn't want it to be about that.  It's been a point of frustration for me because they make it appear a bit confusing.  Currently considering other platforms, but dreading the amount of effort it would take to move everything.  
+Just a reminder that "Donations" on this platform don't go to us - it's the previous journal asking for money for their platform.  I took down everything I could in regards to transfer of money because I didn't want it to be about that.  It's been a point of frustration for me because they make it appear a bit confusing.  Currently considering other platforms, but dreading the amount of effort it would take to move everything.  
 
 Also, a reminder that I save meaningful songs in these Caringbridge posts to a Spotify playlist [here](https://open.spotify.com/playlist/5oi9e2cT5JHBPsXmS4OI5l?si=YRb_wHVcQWuSb2O4UZDe-Q) if you're interested in listening to them on shuffle like I do. :) 
 

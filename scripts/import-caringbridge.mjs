@@ -4,6 +4,7 @@ import path from "node:path";
 const SITE_ID = "ef38d8d4-9caa-39c3-9cb2-5bab89e5de12";
 const ENDPOINT = "https://hgsvhqovbrbt3ivcfobjm5ip6y.appsync-api.us-east-2.amazonaws.com/graphql";
 const OUTPUT_DIR = path.join(process.cwd(), "content", "posts");
+const COMMENTS_DIR = path.join(process.cwd(), "content", "comments");
 
 const query = `query GET_FEED($siteId: String!, $limit: Int, $sortDirection: SortDirection, $nextToken: String) {
   getSite(query: { id: $siteId }) {
@@ -59,9 +60,28 @@ function cloudinaryUrl(photo) {
   return `https://assets.caringbridge.org${photo.legacyPath}`;
 }
 
+function decodeEntities(value) {
+  return value
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, num) => String.fromCodePoint(parseInt(num, 10)))
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&#39;/g, "'")
+    .replace(/&#34;/g, '"')
+    .replace(/&quot;/g, '"')
+    .replace(/&#61;/g, "=")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&hellip;/g, "...")
+    .replace(/&mdash;/g, "-")
+    .replace(/&ndash;/g, "-");
+}
+
 function normalizeBody(body = "") {
-  return String(body)
+  return decodeEntities(String(body))
     .replace(/\r\n/g, "\n")
+    .replace(/\u00a0/g, " ")
+    .replace(/\uFFFD/g, "")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi, "[$2]($1)")
     .replace(/<(strong|b)\b[^>]*>([\s\S]*?)<\/\1>/gi, "**$2**")
@@ -76,16 +96,19 @@ function normalizeBody(body = "") {
     .replace(/<div\b[^>]*>/gi, "")
     .replace(/<\/div>/gi, "\n\n")
     .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#39;/g, "'")
-    .replace(/&#34;/g, '"')
-    .replace(/&quot;/g, '"')
-    .replace(/&#61;/g, "=")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
+    .replace(/\bCaringBridge\b/g, "the previous journal")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+function dedupePhotos(photos = []) {
+  const seen = new Set();
+  return photos.filter((photo) => {
+    const url = cloudinaryUrl(photo);
+    if (!url || seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
 }
 
 async function fetchPage(nextToken) {
@@ -119,24 +142,54 @@ async function fetchPage(nextToken) {
 }
 
 async function main() {
+  await fs.rm(OUTPUT_DIR, { recursive: true, force: true });
+  await fs.rm(COMMENTS_DIR, { recursive: true, force: true });
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
+  await fs.mkdir(COMMENTS_DIR, { recursive: true });
 
   let nextToken;
-  const posts = [];
+  const rawPosts = [];
   let site;
 
   do {
     site = await fetchPage(nextToken);
     const connection = site.feedConnection;
     for (const feed of connection.feeds) {
-      if (feed.type === "POST" && feed.item?.id) posts.push({ ...feed.item, isPinned: feed.isPinned });
+      if (feed.type === "POST" && feed.item?.id) rawPosts.push({ ...feed.item, isPinned: feed.isPinned });
     }
     nextToken = connection.nextToken;
-    console.log(`Fetched ${posts.length} posts so far...`);
+    console.log(`Fetched ${rawPosts.length} entries so far...`);
   } while (nextToken);
 
+  const posts = rawPosts
+    .map((post) => ({
+      ...post,
+      normalizedBody: normalizeBody(post.body),
+      photos: post.photos || []
+    }))
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+  const journalPosts = posts.filter((post) => post.normalizedBody.length > 0);
+  const photoOnlyPosts = posts.filter((post) => post.normalizedBody.length === 0 && post.photos.length > 0);
+
+  for (const photoPost of photoOnlyPosts) {
+    const photoTime = new Date(photoPost.createdAt).getTime();
+    const target = journalPosts
+      .filter((post) => post.title === photoPost.title || post.createdAt.slice(0, 10) === photoPost.createdAt.slice(0, 10))
+      .map((post) => ({ post, distance: Math.abs(new Date(post.createdAt).getTime() - photoTime) }))
+      .filter(({ distance }) => distance <= 1000 * 60 * 90)
+      .sort((a, b) => a.distance - b.distance)[0]?.post;
+
+    if (target) {
+      target.photos = dedupePhotos([...(target.photos || []), ...photoPost.photos]);
+    } else {
+      photoPost.photos = dedupePhotos(photoPost.photos);
+      journalPosts.push(photoPost);
+    }
+  }
+
   const seen = new Set();
-  for (const post of posts) {
+  for (const post of journalPosts.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())) {
     const date = new Date(post.createdAt);
     const datePrefix = date.toISOString().slice(0, 10);
     const base = slugify(post.title || normalizeBody(post.body).slice(0, 48) || post.id);
@@ -145,9 +198,9 @@ async function main() {
     while (seen.has(slug)) slug = `${datePrefix}-${base}-${n++}`;
     seen.add(slug);
 
-    const photos = (post.photos || []).map(cloudinaryUrl).filter(Boolean);
+    const photos = dedupePhotos(post.photos || []).map(cloudinaryUrl).filter(Boolean);
     const markdownPhotos = photos.map((url, index) => `![Photo ${index + 1}](${url})`).join("\n\n");
-    const body = [normalizeBody(post.body), markdownPhotos].filter(Boolean).join("\n\n");
+    const body = [post.normalizedBody, markdownPhotos].filter(Boolean).join("\n\n");
     const author = [post.author?.firstName, post.author?.lastName].filter(Boolean).join(" ") || "Lyla Klopfenstein";
 
     const frontmatter = [
@@ -155,9 +208,9 @@ async function main() {
       `title: ${escapeYaml(post.title || "Update")}`,
       `date: ${escapeYaml(date.toISOString())}`,
       `author: ${escapeYaml(author)}`,
-      `source: ${escapeYaml("CaringBridge")}`,
+      `source: ${escapeYaml("Imported archive")}`,
       `sourceId: ${escapeYaml(post.id)}`,
-      `commentsImported: ${post.commentCount?.totalDescendentCount ?? 0}`,
+      `legacyCommentCount: ${post.commentCount?.totalDescendentCount ?? 0}`,
       `pinned: ${post.isPinned ? "true" : "false"}`,
       `coverImage: ${escapeYaml(photos[0] || "")}`,
       "---",
@@ -165,6 +218,7 @@ async function main() {
     ].join("\n");
 
     await fs.writeFile(path.join(OUTPUT_DIR, `${slug}.md`), `${frontmatter}${body}\n`);
+    await fs.writeFile(path.join(COMMENTS_DIR, `${slug}.json`), "[]\n");
   }
 
   await fs.writeFile(
@@ -174,7 +228,7 @@ async function main() {
         title: site.title || "Lyla Klopfenstein",
         firstName: site.firstName,
         lastName: site.lastName,
-        visitsImportedFromCaringBridge: site.numVisits,
+        visitsImportedFromPreviousSite: site.numVisits,
         importedAt: new Date().toISOString()
       },
       null,
@@ -182,7 +236,7 @@ async function main() {
     )
   );
 
-  console.log(`Imported ${posts.length} posts into ${OUTPUT_DIR}`);
+  console.log(`Imported ${journalPosts.length} journal posts into ${OUTPUT_DIR}`);
 }
 
 main().catch((error) => {

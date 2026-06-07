@@ -2,9 +2,9 @@
 title: "T minus 9 hours - October 23, 2025"
 date: "2025-10-24T00:57:39.698Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "6cbb1f5c-0af9-4618-9b40-4c06293db0c1"
-commentsImported: 13
+legacyCommentCount: 13
 pinned: false
 coverImage: ""
 ---

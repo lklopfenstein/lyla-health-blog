@@ -2,9 +2,9 @@
 title: "Good Days! - Monday, July 28, 2025"
 date: "2025-07-28T19:34:25.714Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "7f3d3c0b-af4a-43de-be9d-c9a4ef8799c5"
-commentsImported: 1
+legacyCommentCount: 1
 pinned: false
 coverImage: ""
 ---

@@ -2,11 +2,11 @@
 title: "November 24, 2024 - Christ the Solid Rock"
 date: "2024-11-25T02:45:52.369Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "6de0686e-9a82-4d34-8fb5-36fcbfacf6d7"
-commentsImported: 10
+legacyCommentCount: 10
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/nwsupkygalgm9v68uyu3"
+coverImage: "/archive-images/4e807afe609d4856.jpg"
 ---
 **Wow. I am simply amazed at the amount of people willing to give a few minutes of their day to beg and plead with God on our daughter's behalf. We're truly humbled and grateful for every prayer offered. It's hard to imagine why even complete strangers would be so kind to us. Whatever the reason, though... thank you. It means the world to us.**
 
@@ -47,14 +47,14 @@ And when that day finally comes when our suffering is over (either healing or a 
 
 **"...all other ground is sinking sand"**
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/nwsupkygalgm9v68uyu3)
+![Photo 1](/archive-images/4e807afe609d4856.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/asyykzqlz8ecq97g7d5a)
+![Photo 2](/archive-images/380d885536b1048f.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/yntxerya1cbmbvohjduk)
+![Photo 3](/archive-images/20b2873ad946d62e.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/zisbhwceldvu1yf1oz1i)
+![Photo 4](/archive-images/6ac572fffce23806.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/ksjeek9e9bbcuwblfvvl)
+![Photo 5](/archive-images/cf1e81ecef045fa6.jpg)
 
-![Photo 6](https://assets.caringbridge.org/image/upload/f_auto,q_auto/imcsyufiyuey6bdswx9o)
+![Photo 6](/archive-images/57567e18571f1c12.jpg)

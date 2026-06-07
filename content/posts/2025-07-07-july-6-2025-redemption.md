@@ -2,11 +2,11 @@
 title: "July 6, 2025 - Redemption!"
 date: "2025-07-07T02:07:04.731Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "1df3d204-7ad3-4386-b8bb-ae476741fd76"
-commentsImported: 8
+legacyCommentCount: 8
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/pk6wns9nksguiivphuzm"
+coverImage: "/archive-images/5b07c69999501f61.jpg"
 ---
 I gotta admit... time is getting away from me.  We're long overdue for an update, so let's get after it!
 
@@ -40,14 +40,14 @@ No specific song this time around that is on repeat... I've just been throwing [
 **Final Prayer:**
 God, I recognize our burdens are great when compared to some folks, and minuscule when compared to others.  Whatever our burdens, I thank You for them.  So far they have grown our faith and unified our family under You. Our story makes Your work and Your love obvious despite our own shortcomings. I pray that as our own story develops and progresses that we can continue to see Your beauty even in what we might see as the most extreme crises.  We love You and pray for more opportunities to share Your love with others while we get out of the way and let you go to work.  Amen.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/pk6wns9nksguiivphuzm)
+![Photo 1](/archive-images/5b07c69999501f61.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/epz2uikpmixntlcb2lu5)
+![Photo 2](/archive-images/2010e32f81f1f0e4.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/nwv1tyauqhkbhi8opcvn)
+![Photo 3](/archive-images/50304e9b36f6fec6.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/pb63inydw8uwwd8m2ad4)
+![Photo 4](/archive-images/ee801a5251a932ce.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/wvqa9tx14vtmw1y4mesi)
+![Photo 5](/archive-images/6500986f9aee027d.jpg)
 
-![Photo 6](https://assets.caringbridge.org/image/upload/f_auto,q_auto/vb50j83kdh3jyepje1ej)
+![Photo 6](/archive-images/95359834e97f2080.jpg)

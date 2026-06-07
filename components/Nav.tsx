@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, MessageCircle, PenLine, Search } from "lucide-react";
+import { Home, LockKeyhole, MailPlus, Search } from "lucide-react";
 
 export function Nav() {
   return (
@@ -18,14 +18,14 @@ export function Nav() {
             <Search size={16} aria-hidden />
             Updates
           </Link>
-          <Link href="/studio">
-            <PenLine size={16} aria-hidden />
-            Write
+          <Link href="/#subscribe">
+            <MailPlus size={16} aria-hidden />
+            Subscribe
           </Link>
-          <a href="#comments">
-            <MessageCircle size={16} aria-hidden />
-            Comments
-          </a>
+          <Link href="/admin">
+            <LockKeyhole size={16} aria-hidden />
+            Admin
+          </Link>
         </nav>
       </div>
     </header>

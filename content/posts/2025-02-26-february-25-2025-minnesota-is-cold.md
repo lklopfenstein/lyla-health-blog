@@ -2,11 +2,11 @@
 title: "February 25, 2025 - Minnesota is cold"
 date: "2025-02-26T04:15:41.693Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "c00f2e19-6029-4fa9-8405-889eef5c8e96"
-commentsImported: 10
+legacyCommentCount: 10
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/afi7o94i1k0l6mdmhdwc"
+coverImage: "/archive-images/5d13b5b2208ebf2c.jpg"
 ---
 An update!
 
@@ -56,14 +56,14 @@ He may not be alive in a touchable, human form today, but he's no less real to u
 
 God, thank you for being in control.  Thank you for having a plan.  Help me to not push for a need for clarity about Your plan - help me to simply trust and obey You.  Reveal to me more of Your love and Your character as I read about You in Your word.  I love You.  Amen.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/afi7o94i1k0l6mdmhdwc)
+![Photo 1](/archive-images/5d13b5b2208ebf2c.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/m4sf0whziehsmxardxre)
+![Photo 2](/archive-images/b4fe680ecc479440.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/x7ylteonentgjnzetoqj)
+![Photo 3](/archive-images/aefb7a845141f6f8.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/igurewzsnhitqzetof8w)
+![Photo 4](/archive-images/95106759bd7daaf8.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/dpju4zoqs6r4m3aks5x5)
+![Photo 5](/archive-images/c98ca52e70bb3f60.jpg)
 
-![Photo 6](https://assets.caringbridge.org/image/upload/f_auto,q_auto/n2s12lrzyc94qcmhnzsd)
+![Photo 6](/archive-images/95009a950ba86e67.jpg)

@@ -2,13 +2,13 @@
 title: "A Mixed Bag/Seasons - December 30, 2025"
 date: "2025-12-30T09:40:03.245Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "7cbcc5c4-6569-4d56-9bb4-8f26937b5b59"
-commentsImported: 7
+legacyCommentCount: 7
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/a3cqmenxdvvlddzllvth"
+coverImage: "/archive-images/e3613f1476fb21b0.png"
 ---
-I guess we're about due for an update!  First off, I want anyone reading this to be aware that it's end of year, so CaringBridge has plenty of pop-ups and ads that ask for money for their platform - FYI, that ain't me and I am unable to remove them!  Please just ignore and carry on. :) 
+I guess we're about due for an update!  First off, I want anyone reading this to be aware that it's end of year, so the previous journal has plenty of pop-ups and ads that ask for money for their platform - FYI, that ain't me and I am unable to remove them!  Please just ignore and carry on. :) 
 
 The overall vibe for our family at the moment is ironically not far off from last year's vibe around this time with a post containing some lyrics from a Counting Crows song, "A Long December". 
 
@@ -90,10 +90,10 @@ Never in a million years.  Never would I have guessed we'd be here.  I'm not tal
 **Prayer**:
 God, I pray that our family remains firm and unified in You.  More tragedy might be ahead, and if that's the case, then so be it.  Help us all find our joy in You as well as showing Your love to others.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/a3cqmenxdvvlddzllvth)
+![Photo 1](/archive-images/e3613f1476fb21b0.png)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/zfxlpk13ealenoojqdka)
+![Photo 2](/archive-images/3c12624f13712a56.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/xuodxn4w2nwivvd3b8hi)
+![Photo 3](/archive-images/fa35ca2f5e04ed37.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/sexqam0dwzmiuqkgwxsv)
+![Photo 4](/archive-images/8929b27d37ea6ea4.jpg)

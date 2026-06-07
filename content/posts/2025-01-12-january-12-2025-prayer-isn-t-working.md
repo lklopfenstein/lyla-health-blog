@@ -2,9 +2,9 @@
 title: "January 12, 2025 - Prayer isn't working"
 date: "2025-01-12T12:31:28.213Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "28b85d6f-6985-494b-97ee-1c3446ff1173"
-commentsImported: 6
+legacyCommentCount: 6
 pinned: false
 coverImage: ""
 ---

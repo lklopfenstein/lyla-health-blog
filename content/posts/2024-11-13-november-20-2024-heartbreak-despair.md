@@ -2,11 +2,11 @@
 title: "November 20, 2024 - Heartbreak/Despair"
 date: "2024-11-13T02:25:34.141Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "0dbf2c58-d20d-4239-9c38-22e2266e79ab"
-commentsImported: 14
+legacyCommentCount: 14
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/isn07isyypmobxl7qhop"
+coverImage: "/archive-images/756c46d82a99b9e0.jpg"
 ---
 Howdy folks!  I'll just get right into it.  
 
@@ -54,14 +54,14 @@ Another bit of scripture that came up while hiking was from Psalm 23:4 (ICB vers
 
 That's it, y'all.  Sorry it isn't better news, but please... join us in prayer.  We're now smack dab in the middle of a 3-5 day EEG in Cleveland Clinic that started Monday, November 18th.  Also... be in  prayer that our house doesn't burn down while we're there this time. :)
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/isn07isyypmobxl7qhop)
+![Photo 1](/archive-images/756c46d82a99b9e0.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/pehju8icfsybacileri6)
+![Photo 2](/archive-images/a3c98d1fe0b78f46.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/ovwk7zmwfttb7ccxkfzo)
+![Photo 3](/archive-images/c6ab642a4ed17466.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/s3exwr8oablojrkgrovb)
+![Photo 4](/archive-images/8422faf923dd2bb6.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/k5ah1yhcf91xlre5v7td)
+![Photo 5](/archive-images/3955fd7fb632f754.jpg)
 
-![Photo 6](https://assets.caringbridge.org/image/upload/f_auto,q_auto/afmovzsayfnj6cjlivyz)
+![Photo 6](/archive-images/fece7b8d84327628.jpg)

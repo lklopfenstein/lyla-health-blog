@@ -2,9 +2,9 @@
 title: "June 18, 2024 - Rollercoasters are the devil - If the House Burns Down Tonight"
 date: "2024-06-29T11:42:48.769Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "42459971-3cf6-369e-b99e-f60aaea06e60"
-commentsImported: 0
+legacyCommentCount: 0
 pinned: false
 coverImage: ""
 ---

@@ -2,11 +2,11 @@
 title: "September 11, 2024 - Change"
 date: "2024-09-12T02:56:12.363Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "5199b1aa-3091-4d5d-8d78-6c0071df46e0"
-commentsImported: 2
+legacyCommentCount: 2
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/lwcvot59qrpbfiioptvo"
+coverImage: "/archive-images/2592fcef25413465.jpg"
 ---
 Howdy folks!  As I type, I'm sitting here with a completely tuckered out Lyla, watching my Buckeyes win the 2016 semifinal (Alabama) and final (Oregon) again because sometimes you just need to relive a game or two, ya know?  Like, life is full of so much uncertainty that sometimes a guaranteed win is what I'm craving.  
 
@@ -83,12 +83,12 @@ Love you all.  My prayer is again that this brings a bit of hope and joy to your
 
 And to Kayla, Micah, and Lyla, I love you all with my entire life.  Let's continue to point each other to God first - the one that never changes.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/lwcvot59qrpbfiioptvo)
+![Photo 1](/archive-images/2592fcef25413465.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/gcwp6jvfdkb3v3gjk9ba)
+![Photo 2](/archive-images/987cc4620586df4b.jpg)
 
-![Photo 3](https://assets.caringbridge.org/image/upload/f_auto,q_auto/f0x3pk54elyya04gfd9v)
+![Photo 3](/archive-images/2b57924ea02f7ade.jpg)
 
-![Photo 4](https://assets.caringbridge.org/image/upload/f_auto,q_auto/qolpzspi7lav87i7vuik)
+![Photo 4](/archive-images/1507710d3cc26e16.jpg)
 
-![Photo 5](https://assets.caringbridge.org/image/upload/f_auto,q_auto/aunpbundpws1j3mkc50m)
+![Photo 5](/archive-images/34b27f6de57ebb5d.jpg)

@@ -2,11 +2,11 @@
 title: "Home?!  HOME!! - October 26, 2025"
 date: "2025-10-25T11:50:53.623Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "ac223feb-0d8f-4cf2-bdd7-4c78a22d45f3"
-commentsImported: 8
+legacyCommentCount: 8
 pinned: false
-coverImage: "https://assets.caringbridge.org/image/upload/f_auto,q_auto/jzgwhkpiklmmeq4nfxpz"
+coverImage: "/archive-images/164d7487e71c97e7.jpg"
 ---
 What a whirlwind of a weekend. The amount of prayer, support, and love for Lyla and our family has been intense and astounding. We've heard from the closest of friends and family and also complete strangers. All of that support has been meaningful in different ways. Prayers offered up from a close family member have the added context of our everyday battles and struggles. Prayers offered from a stranger don't have the everyday context, but rather a love and care that emerges without the relationship first. It begs the question, "But why?? Why do they care about our family at all??" It's humbling and so incredibly meaningful in a different way - I'm equally grateful for both!!
 
@@ -51,6 +51,6 @@ God, thank you for a community of believers across our city, our state, our nati
 
 I love You and trust You with Your plans for Lyla. I thank you forever for being a loving God that cares deeply about us! Amen.
 
-![Photo 1](https://assets.caringbridge.org/image/upload/f_auto,q_auto/jzgwhkpiklmmeq4nfxpz)
+![Photo 1](/archive-images/164d7487e71c97e7.jpg)
 
-![Photo 2](https://assets.caringbridge.org/image/upload/f_auto,q_auto/xs0qka1chgmz4it5rhd1)
+![Photo 2](/archive-images/ff6025a53a833e8e.jpg)

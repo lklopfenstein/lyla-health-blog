@@ -1,11 +1,5 @@
-import { Nav } from "@/components/Nav";
-import { Studio } from "@/components/Studio";
+import { redirect } from "next/navigation";
 
-export default function StudioPage() {
-  return (
-    <main className="shell">
-      <Nav />
-      <Studio />
-    </main>
-  );
+export default function StudioRedirect() {
+  redirect("/admin");
 }

@@ -2,9 +2,9 @@
 title: "July 31, 2024 - Worry - Anything is Possible"
 date: "2024-08-01T03:24:10.776Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "f7f5b84a-eb03-44c6-9d81-9d9dc474b8cf"
-commentsImported: 4
+legacyCommentCount: 4
 pinned: false
 coverImage: ""
 ---

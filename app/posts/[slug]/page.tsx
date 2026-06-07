@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, MessageCircle, Share2 } from "lucide-react";
 import { Comments } from "@/components/Comments";
 import { Markdown } from "@/components/Markdown";
 import { Nav } from "@/components/Nav";
+import { Subscribe } from "@/components/Subscribe";
 import { getAllPosts, getPost } from "@/lib/content";
 
 type Props = {
@@ -67,14 +68,9 @@ export default async function PostPage({ params }: Props) {
           <h2>
             <MessageCircle size={22} aria-hidden /> Comments
           </h2>
-          {post.commentsImported ? (
-            <p className="notice">
-              CaringBridge showed {post.commentsImported} comment{post.commentsImported === 1 ? "" : "s"} on this historical post. New comments
-              live here through GitHub issues once comments are enabled.
-            </p>
-          ) : null}
           <Comments slug={post.slug} />
         </section>
+        <Subscribe compact />
       </article>
     </main>
   );

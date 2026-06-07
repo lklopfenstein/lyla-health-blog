@@ -2,9 +2,9 @@
 title: "Fun While it Lasted! - Tuesday, July 29, 2025"
 date: "2025-07-29T16:57:34.056Z"
 author: "Lee Klopfenstein"
-source: "CaringBridge"
+source: "Imported archive"
 sourceId: "17818baa-8e9b-442f-b1bf-a7a8d72b075c"
-commentsImported: 3
+legacyCommentCount: 3
 pinned: false
 coverImage: ""
 ---
