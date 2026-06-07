@@ -1,8 +1,8 @@
 {
-  "totalPageViews": 7,
-  "uniqueVisitors": 2,
+  "totalPageViews": 8,
+  "uniqueVisitors": 3,
   "byPath": {
-    "/": 2,
+    "/": 3,
     "/posts/2026-05-28-god-you-know-best-may-27-2026": 1,
     "/admin": 1,
     "/posts/2025-10-25-home-home-october-26-2025": 1,
@@ -10,9 +10,14 @@
     "/posts/2026-05-09-dichotomy-if-i-m-being-honest-may-11-2026": 1
   },
   "byDay": {
-    "2026-06-07": 7
+    "2026-06-07": 8
   },
   "recent": [
+    {
+      "path": "/",
+      "at": "2026-06-07T19:29:42.523Z",
+      "visitorId": "9ce67b9a-4886-41ee-ae69-350fb1763908"
+    },
     {
       "path": "/posts/2026-05-09-dichotomy-if-i-m-being-honest-may-11-2026",
       "at": "2026-06-07T13:24:11.533Z",
