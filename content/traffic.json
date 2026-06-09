@@ -1,8 +1,8 @@
 {
-  "totalPageViews": 9,
-  "uniqueVisitors": 3,
+  "totalPageViews": 10,
+  "uniqueVisitors": 4,
   "byPath": {
-    "/": 4,
+    "/": 5,
     "/posts/2026-05-28-god-you-know-best-may-27-2026": 1,
     "/admin": 1,
     "/posts/2025-10-25-home-home-october-26-2025": 1,
@@ -11,9 +11,14 @@
   },
   "byDay": {
     "2026-06-07": 8,
-    "2026-06-09": 1
+    "2026-06-09": 2
   },
   "recent": [
+    {
+      "path": "/",
+      "at": "2026-06-09T00:59:38.168Z",
+      "visitorId": "56edfaf9-6b40-4605-9fbe-c2c95d2077d5"
+    },
     {
       "path": "/",
       "at": "2026-06-09T00:57:24.610Z",
