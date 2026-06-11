@@ -13,26 +13,45 @@ function markdownFor(input: Record<string, string>) {
 }
 
 async function sendNotifications(post: { title: string; slug: string; excerpt: string; siteUrl: string }) {
+  const brevoKey = process.env.BREVO_API_KEY;
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || "Lyla Updates <onboarding@resend.dev>";
-  if (!apiKey) return { sent: 0, skipped: true };
+  const from = process.env.EMAIL_FROM || "";
+  if (!apiKey && !brevoKey) return { sent: 0, skipped: true };
 
   const subscribers = await readJson<Subscriber[]>("content/subscribers.json", []);
   let sent = 0;
   for (const subscriber of subscribers) {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from,
-        to: subscriber.email,
-        subject: `New update: ${post.title}`,
-        html: `<p>Hi ${subscriber.name || "there"},</p><p>A new update has been posted.</p><p><strong>${post.title}</strong></p><p>${post.excerpt}</p><p><a href="${post.siteUrl}/posts/${post.slug}">Read the update</a></p>`
-      })
-    });
+    const html = `<p>Hi ${subscriber.name || "there"},</p><p>A new update has been posted.</p><p><strong>${post.title}</strong></p><p>${post.excerpt}</p><p><a href="${post.siteUrl}/posts/${post.slug}">Read the update</a></p>`;
+    const res = brevoKey
+      ? await fetch("https://api.brevo.com/v3/smtp/email", {
+          method: "POST",
+          headers: {
+            "api-key": brevoKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            sender: {
+              email: from.includes("<") ? from.match(/<([^>]+)>/)?.[1] : from,
+              name: from.includes("<") ? from.split("<")[0].trim() : "Lyla Updates"
+            },
+            to: [{ email: subscriber.email, name: subscriber.name || undefined }],
+            subject: `New update: ${post.title}`,
+            htmlContent: html
+          })
+        })
+      : await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            from,
+            to: subscriber.email,
+            subject: `New update: ${post.title}`,
+            html
+          })
+        });
     if (res.ok) sent += 1;
   }
   return { sent, skipped: false };

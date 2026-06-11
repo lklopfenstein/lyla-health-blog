@@ -54,6 +54,6 @@ export async function GET() {
       date: post.date
     })),
     drafts: await getDrafts(),
-    emailReady: Boolean(process.env.RESEND_API_KEY)
+    emailReady: Boolean((process.env.BREVO_API_KEY || process.env.RESEND_API_KEY) && process.env.EMAIL_FROM)
   });
 }
