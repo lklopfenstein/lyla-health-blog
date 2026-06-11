@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { BarChart3, ImagePlus, LockKeyhole, LogOut, Mail, Save, Send, Users } from "lucide-react";
+import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, Save, Send, Users } from "lucide-react";
 
 type Summary = {
   subscribers: Array<{ email: string; name: string; createdAt: string }>;
@@ -13,6 +13,7 @@ type Summary = {
     recent: Array<{ path: string; at: string }>;
   };
   posts: Array<{ slug: string; title: string; date: string }>;
+  drafts: Array<{ slug: string; title: string; date: string; body: string; coverImage: string }>;
   emailReady: boolean;
 };
 
@@ -98,29 +99,53 @@ export function AdminPanel() {
     await loadSummary();
   }
 
-  async function uploadImage(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-    if (!file) return;
+  async function uploadMedia(event: ChangeEvent<HTMLInputElement>) {
+    const files = [...(event.currentTarget.files || [])];
+    if (!files.length) return;
     setBusy(true);
-    setStatus("Uploading image...");
-    const res = await fetch("/api/admin/upload", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: file.name, content: await toBase64(file) })
-    });
-    const data = await res.json();
+    setStatus(files.length === 1 ? "Uploading media..." : `Uploading ${files.length} files...`);
+    const inserts: string[] = [];
+    let firstImage = "";
+    for (const file of files) {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: file.name, content: await toBase64(file) })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setBusy(false);
+        setStatus(data.message || "Media upload failed.");
+        event.currentTarget.value = "";
+        return;
+      }
+      if (file.type.startsWith("video/")) {
+        inserts.push(`[Video: ${file.name}](${data.path})`);
+      } else {
+        inserts.push(`![${file.name}](${data.path})`);
+        if (!firstImage) firstImage = data.path;
+      }
+    }
     setBusy(false);
     event.currentTarget.value = "";
-    if (!res.ok) {
-      setStatus(data.message || "Image upload failed.");
-      return;
-    }
     setPost((current) => ({
       ...current,
-      coverImage: current.coverImage || data.path,
-      body: `${current.body.trim()}\n\n![${file.name}](${data.path})`.trim()
+      coverImage: current.coverImage || firstImage,
+      body: `${current.body.trim()}\n\n${inserts.join("\n\n")}`.trim()
     }));
-    setStatus("Image inserted.");
+    setStatus(files.length === 1 ? "Media inserted." : "Media inserted.");
+  }
+
+  function loadDraft(draft: Summary["drafts"][number]) {
+    setPost({
+      title: draft.title,
+      date: draft.date ? new Date(draft.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      author: "Lee Klopfenstein",
+      coverImage: draft.coverImage || "",
+      body: draft.body || "",
+      notify: true
+    });
+    setStatus(`Loaded draft: ${draft.title}`);
   }
 
   if (!authenticated) {
@@ -148,7 +173,7 @@ export function AdminPanel() {
       <div className="admin-head">
         <div>
           <p className="eyebrow">Private admin</p>
-          <h1>Dashboard</h1>
+          <h1>Write an update</h1>
         </div>
         <button className="button" type="button" onClick={logout}>
           <LogOut size={17} aria-hidden /> Sign out
@@ -170,8 +195,53 @@ export function AdminPanel() {
         </div>
       </div>
 
+      <div className="writer-shell">
+        <div className="panel writer-panel">
+          <label className="field title-field">
+            Title
+            <input value={post.title} onChange={(event) => setPost({ ...post, title: event.target.value })} placeholder="Give this update a title" />
+          </label>
+          <label className="field">
+            Post
+            <textarea value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} placeholder="Write the update here..." />
+          </label>
+          <div className="studio-actions writer-actions">
+            <label className="button image-button">
+              <ImagePlus size={17} aria-hidden /> Add pictures/videos
+              <input className="sr-only" type="file" accept="image/*,video/*" multiple onChange={uploadMedia} />
+            </label>
+            <button className="button" disabled={busy} type="button" onClick={() => save("draft")}>
+              <Save size={17} aria-hidden /> Save draft
+            </button>
+            <button className="button primary" disabled={busy} type="button" onClick={() => save("post")}>
+              <Send size={17} aria-hidden /> Publish
+            </button>
+          </div>
+          <label className="field checkbox-field notify-field">
+            <input checked={post.notify} onChange={(event) => setPost({ ...post, notify: event.target.checked })} type="checkbox" />
+            Email subscribers when this is published
+          </label>
+          {status ? <p className="form-status">{status}</p> : null}
+        </div>
+      </div>
+
       <div className="studio-grid">
         <aside className="panel">
+          <h2>
+            <FileText size={22} aria-hidden /> Drafts
+          </h2>
+          <div className="draft-list">
+            {summary?.drafts.length ? (
+              summary.drafts.map((draft) => (
+                <button key={draft.slug} type="button" onClick={() => loadDraft(draft)}>
+                  <strong>{draft.title}</strong>
+                  <span>{draft.body.slice(0, 120) || "No body yet"}</span>
+                </button>
+              ))
+            ) : (
+              <p className="empty-note">No saved drafts yet.</p>
+            )}
+          </div>
           <h2>
             <Users size={22} aria-hidden /> Subscribers
           </h2>
@@ -201,43 +271,6 @@ export function AdminPanel() {
             <Mail size={16} aria-hidden /> {summary?.emailReady ? "Email notifications are connected." : "Email notifications are wired, but an email key is not connected yet."}
           </p>
         </aside>
-
-        <div className="panel">
-          <h2>Write a post</h2>
-          <label className="field">
-            Title
-            <input value={post.title} onChange={(event) => setPost({ ...post, title: event.target.value })} />
-          </label>
-          <label className="field">
-            Date
-            <input value={post.date} onChange={(event) => setPost({ ...post, date: event.target.value })} type="date" />
-          </label>
-          <label className="field">
-            Cover image
-            <input value={post.coverImage} onChange={(event) => setPost({ ...post, coverImage: event.target.value })} />
-          </label>
-          <label className="field checkbox-field">
-            <input checked={post.notify} onChange={(event) => setPost({ ...post, notify: event.target.checked })} type="checkbox" />
-            Email subscribers when this is published
-          </label>
-          <label className="button image-button">
-            <ImagePlus size={17} aria-hidden /> Add image
-            <input className="sr-only" type="file" accept="image/*" onChange={uploadImage} />
-          </label>
-          <label className="field">
-            Body
-            <textarea value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} />
-          </label>
-          <div className="studio-actions">
-            <button className="button" disabled={busy} type="button" onClick={() => save("draft")}>
-              <Save size={17} aria-hidden /> Save draft
-            </button>
-            <button className="button primary" disabled={busy} type="button" onClick={() => save("post")}>
-              <Send size={17} aria-hidden /> Publish
-            </button>
-          </div>
-          {status ? <p className="form-status">{status}</p> : null}
-        </div>
       </div>
     </section>
   );

@@ -28,6 +28,16 @@ function SpotifyEmbed({ url }: { url: string }) {
   );
 }
 
+function isVideoUrl(url: string) {
+  return /\.(mp4|mov|m4v|webm)(\?.*)?$/i.test(url);
+}
+
+function VideoEmbed({ url }: { url: string }) {
+  return (
+    <video className="post-video" src={url} controls playsInline preload="metadata" />
+  );
+}
+
 function inline(text: string) {
   const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|https?:\/\/[^\s]+)/g);
   return parts.map((part, index) => {
@@ -43,6 +53,7 @@ function inline(text: string) {
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link) {
       if (spotifyEmbedUrl(link[2])) return <SpotifyEmbed key={index} url={link[2]} />;
+      if (isVideoUrl(link[2])) return <VideoEmbed key={index} url={link[2]} />;
       return (
         <a key={index} href={link[2]} target="_blank" rel="noreferrer">
           {link[1]}
@@ -52,6 +63,7 @@ function inline(text: string) {
 
     if (/^https?:\/\//.test(part)) {
       if (spotifyEmbedUrl(part)) return <SpotifyEmbed key={index} url={part} />;
+      if (isVideoUrl(part)) return <VideoEmbed key={index} url={part} />;
       return (
         <a key={index} href={part} target="_blank" rel="noreferrer">
           {part}
@@ -71,6 +83,9 @@ export function Markdown({ body }: { body: string }) {
       {blocks.map((block, index) => {
         const trimmed = block.trim();
         if (spotifyEmbedUrl(trimmed)) return <SpotifyEmbed key={index} url={trimmed} />;
+        if (isVideoUrl(trimmed)) return <VideoEmbed key={index} url={trimmed} />;
+        const videoLink = trimmed.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+        if (videoLink && isVideoUrl(videoLink[2])) return <VideoEmbed key={index} url={videoLink[2]} />;
         if (trimmed.startsWith("### ")) return <h3 key={index}>{inline(trimmed.slice(4))}</h3>;
         if (trimmed.startsWith("## ")) return <h2 key={index}>{inline(trimmed.slice(3))}</h2>;
         if (trimmed.startsWith("# ")) return <h2 key={index}>{inline(trimmed.slice(2))}</h2>;

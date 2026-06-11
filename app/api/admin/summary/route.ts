@@ -1,7 +1,34 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
 import { getAllPosts } from "@/lib/content";
-import { readJson } from "@/lib/store";
+import { listFiles, readJson, readText } from "@/lib/store";
+
+function frontmatterValue(markdown: string, key: string) {
+  const match = markdown.match(new RegExp(`^${key}:\\\\s*(.+)$`, "m"));
+  if (!match) return "";
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    return match[1].replace(/^["']|["']$/g, "");
+  }
+}
+
+async function getDrafts() {
+  const files = (await listFiles("content/drafts")).filter((file) => file.endsWith(".md"));
+  return Promise.all(
+    files.map(async (file) => {
+      const markdown = await readText(`content/drafts/${file}`, "");
+      const body = markdown.replace(/^---[\s\S]*?\n---\n*/, "").trim();
+      return {
+        slug: file.replace(/\.md$/, ""),
+        title: frontmatterValue(markdown, "title") || "Untitled draft",
+        date: frontmatterValue(markdown, "date"),
+        coverImage: frontmatterValue(markdown, "coverImage"),
+        body
+      };
+    })
+  );
+}
 
 export async function GET() {
   if (!(await isAdmin())) {
@@ -26,6 +53,7 @@ export async function GET() {
       title: post.title,
       date: post.date
     })),
+    drafts: await getDrafts(),
     emailReady: Boolean(process.env.RESEND_API_KEY)
   });
 }

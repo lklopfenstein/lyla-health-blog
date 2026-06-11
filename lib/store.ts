@@ -12,6 +12,12 @@ type GitFile = {
   sha: string;
 };
 
+type GitDirectoryItem = {
+  name: string;
+  path: string;
+  type: string;
+};
+
 function localPath(filePath: string) {
   const target = path.normalize(path.join(root, filePath));
   const contentRoot = path.join(root, "content");
@@ -42,6 +48,28 @@ async function getGitFile(filePath: string): Promise<GitFile | null> {
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Unable to read ${filePath}`);
   return res.json();
+}
+
+export async function listFiles(dirPath: string) {
+  if (token) {
+    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${dirPath}?ref=${branch}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/vnd.github+json"
+      },
+      cache: "no-store"
+    });
+    if (res.status === 404) return [];
+    if (!res.ok) throw new Error(`Unable to list ${dirPath}`);
+    const items = (await res.json()) as GitDirectoryItem[];
+    return items.filter((item) => item.type === "file").map((item) => item.name);
+  }
+
+  try {
+    return await fs.readdir(localPath(dirPath));
+  } catch {
+    return [];
+  }
 }
 
 export async function readText(filePath: string, fallback = "") {
