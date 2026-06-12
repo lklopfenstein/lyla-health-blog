@@ -14,6 +14,10 @@ export type Post = {
   pinned?: boolean;
 };
 
+type ContentOptions = {
+  allowBundledFallback?: boolean;
+};
+
 function parseFrontmatter(raw: string) {
   if (!raw.startsWith("---")) return { data: {}, body: raw };
   const end = raw.indexOf("\n---", 3);
@@ -57,16 +61,17 @@ function imageFromBody(markdown: string) {
   return match?.[1];
 }
 
-export async function getAllPosts(): Promise<Post[]> {
-  const files = (await listFiles("content/posts")).filter((file) => file.endsWith(".md"));
+export async function getAllPosts(options?: ContentOptions): Promise<Post[]> {
+  const readOptions = { allowBundledFallback: options?.allowBundledFallback ?? true };
+  const files = (await listFiles("content/posts", readOptions)).filter((file) => file.endsWith(".md"));
 
   const posts = await Promise.all(
     files.map(async (file) => {
-      const raw = await readText(`content/posts/${file}`, "");
+      const raw = await readText(`content/posts/${file}`, "", readOptions);
       const { data, body } = parseFrontmatter(raw);
       const slug = file.replace(/\.md$/, "");
       const excerpt = stripMarkdown(body).slice(0, 180);
-      const comments = await readJson<unknown[]>(`content/comments/${slug}.json`, []);
+      const comments = await readJson<unknown[]>(`content/comments/${slug}.json`, [], readOptions);
       const legacyCommentCount = Number(data.legacyCommentCount || data.commentsImported || 0);
       return {
         slug,
@@ -90,8 +95,8 @@ export async function getAllPosts(): Promise<Post[]> {
   });
 }
 
-export async function getPost(slug: string) {
-  const posts = await getAllPosts();
+export async function getPost(slug: string, options?: ContentOptions) {
+  const posts = await getAllPosts(options);
   return posts.find((post) => post.slug === slug);
 }
 

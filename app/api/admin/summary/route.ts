@@ -14,10 +14,11 @@ function frontmatterValue(markdown: string, key: string) {
 }
 
 async function getDrafts() {
-  const files = (await listFiles("content/drafts")).filter((file) => file.endsWith(".md"));
+  const storageOptions = { allowBundledFallback: false };
+  const files = (await listFiles("content/drafts", storageOptions)).filter((file) => file.endsWith(".md"));
   return Promise.all(
     files.map(async (file) => {
-      const markdown = await readText(`content/drafts/${file}`, "");
+      const markdown = await readText(`content/drafts/${file}`, "", storageOptions);
       const body = markdown.replace(/^---[\s\S]*?\n---\n*/, "").trim();
       return {
         slug: file.replace(/\.md$/, ""),
@@ -35,8 +36,9 @@ export async function GET() {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const subscribers = await readJson("content/subscribers.json", []);
-  const pushSubscribers = await readJson("content/push-subscribers.json", []);
+  const storageOptions = { allowBundledFallback: false };
+  const subscribers = await readJson("content/subscribers.json", [], storageOptions);
+  const pushSubscribers = await readJson("content/push-subscribers.json", [], storageOptions);
   const traffic = await readJson<{
     totalPageViews: number;
     uniqueVisitors: number;
@@ -49,9 +51,9 @@ export async function GET() {
     byPath: {},
     byDay: {},
     recent: []
-  });
+  }, storageOptions);
 
-  const posts = await getAllPosts();
+  const posts = await getAllPosts(storageOptions);
 
   return NextResponse.json({
     ok: true,

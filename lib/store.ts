@@ -18,6 +18,10 @@ type GitDirectoryItem = {
   type: string;
 };
 
+type ReadOptions = {
+  allowBundledFallback?: boolean;
+};
+
 function localPath(filePath: string) {
   const target = path.normalize(path.join(root, filePath));
   const contentRoot = path.join(root, "content");
@@ -36,7 +40,8 @@ function decodeBase64(value: string) {
   return Buffer.from(value, "base64").toString("utf8");
 }
 
-function canUseBundledFallback() {
+function canUseBundledFallback(options?: ReadOptions) {
+  if (typeof options?.allowBundledFallback === "boolean") return options.allowBundledFallback;
   return !token || process.env.NEXT_PHASE === "phase-production-build" || process.env.NODE_ENV !== "production";
 }
 
@@ -54,7 +59,7 @@ async function getGitFile(filePath: string): Promise<GitFile | null> {
   return res.json();
 }
 
-export async function listFiles(dirPath: string) {
+export async function listFiles(dirPath: string, options?: ReadOptions) {
   if (token) {
     try {
       const res = await fetch(`https://api.github.com/repos/${repo}/contents/${dirPath}?ref=${branch}`, {
@@ -69,14 +74,14 @@ export async function listFiles(dirPath: string) {
         const items = (await res.json()) as GitDirectoryItem[];
         return items.filter((item) => item.type === "file").map((item) => item.name);
       }
-      if (!canUseBundledFallback()) throw new Error(`Unable to list ${dirPath}`);
+      if (!canUseBundledFallback(options)) throw new Error(`Unable to list ${dirPath}`);
     } catch {
-      if (!canUseBundledFallback()) throw new Error(`Unable to list ${dirPath}`);
+      if (!canUseBundledFallback(options)) throw new Error(`Unable to list ${dirPath}`);
       // Fall back to bundled files for build-time reads.
     }
   }
 
-  if (!canUseBundledFallback()) return [];
+  if (!canUseBundledFallback(options)) return [];
 
   try {
     return await fs.readdir(localPath(dirPath));
@@ -85,13 +90,13 @@ export async function listFiles(dirPath: string) {
   }
 }
 
-export async function readText(filePath: string, fallback = "") {
+export async function readText(filePath: string, fallback = "", options?: ReadOptions) {
   const gitFile = await getGitFile(filePath).catch((error) => {
-    if (!canUseBundledFallback()) throw error;
+    if (!canUseBundledFallback(options)) throw error;
     return null;
   });
   if (gitFile?.content) return decodeBase64(gitFile.content);
-  if (!canUseBundledFallback()) return fallback;
+  if (!canUseBundledFallback(options)) return fallback;
   try {
     return await fs.readFile(localPath(filePath), "utf8");
   } catch {
@@ -99,9 +104,9 @@ export async function readText(filePath: string, fallback = "") {
   }
 }
 
-export async function readJson<T>(filePath: string, fallback: T): Promise<T> {
+export async function readJson<T>(filePath: string, fallback: T, options?: ReadOptions): Promise<T> {
   try {
-    return JSON.parse(await readText(filePath, JSON.stringify(fallback))) as T;
+    return JSON.parse(await readText(filePath, JSON.stringify(fallback), options)) as T;
   } catch {
     return fallback;
   }
