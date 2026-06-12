@@ -46,23 +46,28 @@ async function getGitFile(filePath: string): Promise<GitFile | null> {
     cache: "no-store"
   });
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`Unable to read ${filePath}`);
+  if (!res.ok) return null;
   return res.json();
 }
 
 export async function listFiles(dirPath: string) {
   if (token) {
-    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${dirPath}?ref=${branch}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json"
-      },
-      cache: "no-store"
-    });
-    if (res.status === 404) return [];
-    if (!res.ok) throw new Error(`Unable to list ${dirPath}`);
-    const items = (await res.json()) as GitDirectoryItem[];
-    return items.filter((item) => item.type === "file").map((item) => item.name);
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}/contents/${dirPath}?ref=${branch}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/vnd.github+json"
+        },
+        cache: "no-store"
+      });
+      if (res.status === 404) return [];
+      if (res.ok) {
+        const items = (await res.json()) as GitDirectoryItem[];
+        return items.filter((item) => item.type === "file").map((item) => item.name);
+      }
+    } catch {
+      // Fall back to bundled files for build-time reads.
+    }
   }
 
   try {
@@ -73,7 +78,7 @@ export async function listFiles(dirPath: string) {
 }
 
 export async function readText(filePath: string, fallback = "") {
-  const gitFile = await getGitFile(filePath);
+  const gitFile = await getGitFile(filePath).catch(() => null);
   if (gitFile?.content) return decodeBase64(gitFile.content);
   try {
     return await fs.readFile(localPath(filePath), "utf8");
