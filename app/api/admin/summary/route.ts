@@ -51,7 +51,13 @@ export async function GET() {
     posts: getAllPosts().map((post) => ({
       slug: post.slug,
       title: post.title,
-      date: post.date
+      date: post.date,
+      author: post.author,
+      body: post.body,
+      coverImage: post.coverImage || "",
+      source: post.source || "Journal update",
+      legacyCommentCount: post.legacyCommentCount || 0,
+      pinned: Boolean(post.pinned)
     })),
     drafts: await getDrafts(),
     emailReady: Boolean((process.env.BREVO_API_KEY || process.env.RESEND_API_KEY) && process.env.EMAIL_FROM)

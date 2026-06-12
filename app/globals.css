@@ -654,7 +654,8 @@ h1 {
 
 .subscriber-list,
 .traffic-list,
-.draft-list {
+.draft-list,
+.manage-list {
   display: grid;
   gap: 9px;
   margin-bottom: 24px;
@@ -662,7 +663,9 @@ h1 {
 
 .subscriber-list div,
 .traffic-list div,
-.draft-list button {
+.draft-list button,
+.manage-item,
+.managed-comment {
   display: grid;
   gap: 2px;
   padding-bottom: 9px;
@@ -672,6 +675,8 @@ h1 {
 .subscriber-list span,
 .traffic-list span,
 .draft-list span,
+.manage-item span,
+.managed-comment span,
 .empty-note {
   color: var(--muted);
   font-size: 13px;
@@ -689,6 +694,61 @@ h1 {
 
 .draft-list button:hover strong {
   color: var(--rose);
+}
+
+.manage-item,
+.managed-comment {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.manage-item.active {
+  border-left: 3px solid var(--rose);
+  padding-left: 10px;
+}
+
+.manage-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-action {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  color: var(--sage-dark);
+  cursor: pointer;
+}
+
+.icon-action:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+.icon-action.danger:hover {
+  border-color: #b42318;
+  color: #b42318;
+}
+
+.comment-manager {
+  margin-bottom: 24px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 243, 0.66);
+}
+
+.managed-comment span {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
 }
 
 .traffic-list div {

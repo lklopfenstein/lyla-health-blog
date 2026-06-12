@@ -150,6 +150,33 @@ export async function writeJson(filePath: string, value: unknown, message: strin
   await writeText(filePath, `${JSON.stringify(value, null, 2)}\n`, message);
 }
 
+export async function deleteFile(filePath: string, message: string) {
+  if (!token) {
+    await fs.rm(localPath(filePath), { force: true });
+    return;
+  }
+
+  const existing = await getGitFile(filePath);
+  if (!existing) return;
+  const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      branch,
+      message,
+      sha: existing.sha
+    })
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `Unable to delete ${filePath}`);
+  }
+}
+
 export function slugify(value: string) {
   return (
     value

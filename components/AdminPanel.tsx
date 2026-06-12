@@ -1,7 +1,26 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, Save, Send, Users } from "lucide-react";
+import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, MessageCircle, Pencil, Save, Send, Trash2, Users } from "lucide-react";
+
+type Comment = {
+  id: string;
+  name: string;
+  body: string;
+  createdAt: string;
+};
+
+type EditablePost = {
+  slug: string;
+  title: string;
+  date: string;
+  author: string;
+  body: string;
+  coverImage: string;
+  source: string;
+  legacyCommentCount: number;
+  pinned: boolean;
+};
 
 type Summary = {
   subscribers: Array<{ email: string; name: string; createdAt: string }>;
@@ -12,7 +31,7 @@ type Summary = {
     byDay: Record<string, number>;
     recent: Array<{ path: string; at: string }>;
   };
-  posts: Array<{ slug: string; title: string; date: string }>;
+  posts: EditablePost[];
   drafts: Array<{ slug: string; title: string; date: string; body: string; coverImage: string }>;
   emailReady: boolean;
 };
@@ -23,6 +42,9 @@ const emptyPost = {
   author: "Lee Klopfenstein",
   coverImage: "",
   body: "",
+  source: "New update",
+  legacyCommentCount: 0,
+  pinned: false,
   notify: true
 };
 
@@ -40,6 +62,10 @@ export function AdminPanel() {
   const [authenticated, setAuthenticated] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [post, setPost] = useState(emptyPost);
+  const [editingSlug, setEditingSlug] = useState("");
+  const [selectedCommentsSlug, setSelectedCommentsSlug] = useState("");
+  const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
+  const [commentStatus, setCommentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -82,11 +108,12 @@ export function AdminPanel() {
 
   async function save(kind: "draft" | "post") {
     setBusy(true);
-    setStatus(kind === "draft" ? "Saving draft..." : "Publishing...");
-    const res = await fetch("/api/admin/publish", {
-      method: "POST",
+    setStatus(editingSlug && kind === "post" ? "Saving changes..." : kind === "draft" ? "Saving draft..." : "Publishing...");
+    const isEditingPost = Boolean(editingSlug && kind === "post");
+    const res = await fetch(isEditingPost ? "/api/admin/posts" : "/api/admin/publish", {
+      method: isEditingPost ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...post, kind })
+      body: JSON.stringify(isEditingPost ? { ...post, slug: editingSlug } : { ...post, kind })
     });
     const data = await res.json();
     setBusy(false);
@@ -94,8 +121,42 @@ export function AdminPanel() {
       setStatus(data.message || "Could not save.");
       return;
     }
-    setStatus(kind === "draft" ? "Draft saved." : data.email?.skipped ? "Published. Email sending is not connected yet." : `Published and emailed ${data.email.sent} subscriber(s).`);
-    if (kind === "post") setPost(emptyPost);
+    if (isEditingPost) {
+      setStatus("Post updated.");
+      setEditingSlug("");
+      setPost(emptyPost);
+    } else {
+      setStatus(kind === "draft" ? "Draft saved." : data.email?.skipped ? "Published. Email sending is not connected yet." : `Published and emailed ${data.email.sent} subscriber(s).`);
+      if (kind === "post") setPost(emptyPost);
+    }
+    await loadSummary();
+  }
+
+  async function deletePost(slug: string, title: string) {
+    const confirmed = window.confirm(`Delete "${title}" and its comments? This cannot be undone from the admin screen.`);
+    if (!confirmed) return;
+    setBusy(true);
+    setStatus("Deleting post...");
+    const res = await fetch("/api/admin/posts", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug })
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setStatus(data.message || "Could not delete post.");
+      return;
+    }
+    if (editingSlug === slug) {
+      setEditingSlug("");
+      setPost(emptyPost);
+    }
+    if (selectedCommentsSlug === slug) {
+      setSelectedCommentsSlug("");
+      setSelectedComments([]);
+    }
+    setStatus("Post deleted.");
     await loadSummary();
   }
 
@@ -143,9 +204,68 @@ export function AdminPanel() {
       author: "Lee Klopfenstein",
       coverImage: draft.coverImage || "",
       body: draft.body || "",
+      source: "New update",
+      legacyCommentCount: 0,
+      pinned: false,
       notify: true
     });
+    setEditingSlug("");
     setStatus(`Loaded draft: ${draft.title}`);
+  }
+
+  function editPublishedPost(item: EditablePost) {
+    setPost({
+      title: item.title,
+      date: item.date ? new Date(item.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      author: item.author || "Lee Klopfenstein",
+      coverImage: item.coverImage || "",
+      body: item.body || "",
+      source: item.source || "Journal update",
+      legacyCommentCount: item.legacyCommentCount || 0,
+      pinned: Boolean(item.pinned),
+      notify: false
+    });
+    setEditingSlug(item.slug);
+    setStatus(`Editing: ${item.title}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function newPost() {
+    setEditingSlug("");
+    setPost(emptyPost);
+    setStatus("Ready for a new post.");
+  }
+
+  async function loadComments(slug: string) {
+    setCommentStatus("Loading comments...");
+    const res = await fetch(`/api/comments/${slug}`, { cache: "no-store" });
+    const data = await res.json();
+    if (!res.ok) {
+      setCommentStatus(data.message || "Could not load comments.");
+      return;
+    }
+    setSelectedCommentsSlug(slug);
+    setSelectedComments(data.comments || []);
+    setCommentStatus("");
+  }
+
+  async function deleteComment(commentId: string) {
+    if (!selectedCommentsSlug) return;
+    const confirmed = window.confirm("Delete this comment?");
+    if (!confirmed) return;
+    setCommentStatus("Deleting comment...");
+    const res = await fetch("/api/admin/comments", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: selectedCommentsSlug, commentId })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setCommentStatus(data.message || "Could not delete comment.");
+      return;
+    }
+    setSelectedComments(data.comments || []);
+    setCommentStatus("Comment deleted.");
   }
 
   if (!authenticated) {
@@ -173,7 +293,7 @@ export function AdminPanel() {
       <div className="admin-head">
         <div>
           <p className="eyebrow">Private admin</p>
-          <h1>Write an update</h1>
+          <h1>{editingSlug ? "Edit this update" : "Write an update"}</h1>
         </div>
         <button className="button" type="button" onClick={logout}>
           <LogOut size={17} aria-hidden /> Sign out
@@ -197,6 +317,11 @@ export function AdminPanel() {
 
       <div className="writer-shell">
         <div className="panel writer-panel">
+          {editingSlug ? (
+            <div className="notice">
+              <Pencil size={16} aria-hidden /> Editing a published post. Save changes will update the live post without emailing subscribers.
+            </div>
+          ) : null}
           <label className="field title-field">
             Title
             <input value={post.title} onChange={(event) => setPost({ ...post, title: event.target.value })} placeholder="Give this update a title" />
@@ -214,13 +339,20 @@ export function AdminPanel() {
               <Save size={17} aria-hidden /> Save draft
             </button>
             <button className="button primary" disabled={busy} type="button" onClick={() => save("post")}>
-              <Send size={17} aria-hidden /> Publish
+              <Send size={17} aria-hidden /> {editingSlug ? "Save changes" : "Publish"}
             </button>
+            {editingSlug ? (
+              <button className="button" disabled={busy} type="button" onClick={newPost}>
+                New post
+              </button>
+            ) : null}
           </div>
-          <label className="field checkbox-field notify-field">
-            <input checked={post.notify} onChange={(event) => setPost({ ...post, notify: event.target.checked })} type="checkbox" />
-            Email subscribers when this is published
-          </label>
+          {!editingSlug ? (
+            <label className="field checkbox-field notify-field">
+              <input checked={post.notify} onChange={(event) => setPost({ ...post, notify: event.target.checked })} type="checkbox" />
+              Email subscribers when this is published
+            </label>
+          ) : null}
           {status ? <p className="form-status">{status}</p> : null}
         </div>
       </div>
@@ -239,9 +371,56 @@ export function AdminPanel() {
                 </button>
               ))
             ) : (
-              <p className="empty-note">No saved drafts yet.</p>
-            )}
+            <p className="empty-note">No saved drafts yet.</p>
+          )}
           </div>
+          <h2>
+            <Pencil size={22} aria-hidden /> Published posts
+          </h2>
+          <div className="manage-list">
+            {summary?.posts.map((item) => (
+              <div key={item.slug} className={editingSlug === item.slug ? "manage-item active" : "manage-item"}>
+                <div>
+                  <strong>{item.title}</strong>
+                  <span>{new Date(item.date).toLocaleDateString()}</span>
+                </div>
+                <div className="manage-actions">
+                  <button className="icon-action" type="button" title="Edit post" onClick={() => editPublishedPost(item)}>
+                    <Pencil size={16} aria-hidden />
+                  </button>
+                  <button className="icon-action" type="button" title="Manage comments" onClick={() => loadComments(item.slug)}>
+                    <MessageCircle size={16} aria-hidden />
+                  </button>
+                  <button className="icon-action danger" type="button" title="Delete post" onClick={() => deletePost(item.slug, item.title)}>
+                    <Trash2 size={16} aria-hidden />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          {selectedCommentsSlug ? (
+            <div className="comment-manager">
+              <h3>
+                <MessageCircle size={18} aria-hidden /> Comments
+              </h3>
+              {selectedComments.length ? (
+                selectedComments.map((comment) => (
+                  <article key={comment.id} className="managed-comment">
+                    <div>
+                      <strong>{comment.name}</strong>
+                      <span>{comment.body}</span>
+                    </div>
+                    <button className="icon-action danger" type="button" title="Delete comment" onClick={() => deleteComment(comment.id)}>
+                      <Trash2 size={16} aria-hidden />
+                    </button>
+                  </article>
+                ))
+              ) : (
+                <p className="empty-note">No comments on this post yet.</p>
+              )}
+              {commentStatus ? <p className="form-status">{commentStatus}</p> : null}
+            </div>
+          ) : null}
           <h2>
             <Users size={22} aria-hidden /> Subscribers
           </h2>
