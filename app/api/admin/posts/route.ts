@@ -41,10 +41,17 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ ok: false, message: "Post slug is required." }, { status: 400 });
   }
 
-  const comments = await readJson(`content/comments/${slug}.json`, null);
-  await deleteFile(`content/posts/${slug}.md`, `Delete post: ${slug}`);
-  if (comments !== null) {
-    await deleteFile(`content/comments/${slug}.json`, `Delete comments for ${slug}`);
+  try {
+    const comments = await readJson(`content/comments/${slug}.json`, null);
+    await deleteFile(`content/posts/${slug}.md`, `Delete post: ${slug}`);
+    if (comments !== null) {
+      await deleteFile(`content/comments/${slug}.json`, `Delete comments for ${slug}`);
+    }
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, message: error instanceof Error ? error.message : "Could not delete post." },
+      { status: 500 }
+    );
   }
   return NextResponse.json({ ok: true });
 }

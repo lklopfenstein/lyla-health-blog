@@ -36,6 +36,10 @@ function decodeBase64(value: string) {
   return Buffer.from(value, "base64").toString("utf8");
 }
 
+function canUseBundledFallback() {
+  return !token || process.env.NEXT_PHASE === "phase-production-build" || process.env.NODE_ENV !== "production";
+}
+
 async function getGitFile(filePath: string): Promise<GitFile | null> {
   if (!token) return null;
   const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`, {
@@ -46,7 +50,7 @@ async function getGitFile(filePath: string): Promise<GitFile | null> {
     cache: "no-store"
   });
   if (res.status === 404) return null;
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error(`Unable to read ${filePath}`);
   return res.json();
 }
 
@@ -65,10 +69,14 @@ export async function listFiles(dirPath: string) {
         const items = (await res.json()) as GitDirectoryItem[];
         return items.filter((item) => item.type === "file").map((item) => item.name);
       }
+      if (!canUseBundledFallback()) throw new Error(`Unable to list ${dirPath}`);
     } catch {
+      if (!canUseBundledFallback()) throw new Error(`Unable to list ${dirPath}`);
       // Fall back to bundled files for build-time reads.
     }
   }
+
+  if (!canUseBundledFallback()) return [];
 
   try {
     return await fs.readdir(localPath(dirPath));
@@ -78,8 +86,12 @@ export async function listFiles(dirPath: string) {
 }
 
 export async function readText(filePath: string, fallback = "") {
-  const gitFile = await getGitFile(filePath).catch(() => null);
+  const gitFile = await getGitFile(filePath).catch((error) => {
+    if (!canUseBundledFallback()) throw error;
+    return null;
+  });
   if (gitFile?.content) return decodeBase64(gitFile.content);
+  if (!canUseBundledFallback()) return fallback;
   try {
     return await fs.readFile(localPath(filePath), "utf8");
   } catch {

@@ -25,8 +25,15 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ ok: false, message: "Post and comment are required." }, { status: 400 });
   }
 
-  const comments = await readJson<Comment[]>(`content/comments/${slug}.json`, []);
-  const nextComments = comments.filter((comment) => comment.id !== commentId);
-  await writeJson(`content/comments/${slug}.json`, nextComments, `Delete comment on ${slug}`);
-  return NextResponse.json({ ok: true, comments: nextComments });
+  try {
+    const comments = await readJson<Comment[]>(`content/comments/${slug}.json`, []);
+    const nextComments = comments.filter((comment) => comment.id !== commentId);
+    await writeJson(`content/comments/${slug}.json`, nextComments, `Delete comment on ${slug}`);
+    return NextResponse.json({ ok: true, comments: nextComments });
+  } catch (error) {
+    return NextResponse.json(
+      { ok: false, message: error instanceof Error ? error.message : "Could not delete comment." },
+      { status: 500 }
+    );
+  }
 }
