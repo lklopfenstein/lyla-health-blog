@@ -39,7 +39,7 @@ function VideoEmbed({ url }: { url: string }) {
 }
 
 function inline(text: string) {
-  const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|(?:https?:\/\/|www\.)[^\s]+)/g);
+  const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|<u>.*?<\/u>|(?:https?:\/\/|www\.)[^\s]+)/g);
   return parts.map((part, index) => {
     const image = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (image) return <img key={index} src={image[2]} alt={image[1]} loading="lazy" />;
@@ -49,6 +49,9 @@ function inline(text: string) {
 
     const italic = part.match(/^_([^_]+)_$/);
     if (italic) return <em key={index}>{italic[1]}</em>;
+
+    const underline = part.match(/^<u>(.*?)<\/u>$/);
+    if (underline) return <u key={index}>{underline[1]}</u>;
 
     const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (link) {

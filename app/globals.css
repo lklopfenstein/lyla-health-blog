@@ -656,6 +656,33 @@ h1 {
   font-size: 20px;
 }
 
+.format-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 253, 249, 0.78);
+}
+
+.format-toolbar button {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(230, 215, 195, 0.92);
+  border-radius: 8px;
+  background: white;
+  color: var(--sage-dark);
+  cursor: pointer;
+}
+
+.format-toolbar button:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
 .inline-field {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

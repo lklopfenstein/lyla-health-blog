@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, MessageCircle, Music, Pencil, Save, Send, Trash2, Users } from "lucide-react";
+import { BarChart3, Bold, FileText, ImagePlus, Italic, Link as LinkIcon, List, LockKeyhole, LogOut, Mail, MessageCircle, Music, Pencil, Save, Send, Trash2, Underline, Users } from "lucide-react";
 import { Markdown } from "@/components/Markdown";
 
 type Comment = {
@@ -306,6 +306,55 @@ export function AdminPanel() {
     setStatus("Spotify link inserted.");
   }
 
+  function formatSelection(prefix: string, suffix = prefix, placeholder = "text") {
+    const textarea = document.getElementById("post-body") as HTMLTextAreaElement | null;
+    const start = textarea?.selectionStart ?? post.body.length;
+    const end = textarea?.selectionEnd ?? post.body.length;
+    const selected = post.body.slice(start, end) || placeholder;
+    const nextBody = `${post.body.slice(0, start)}${prefix}${selected}${suffix}${post.body.slice(end)}`;
+    setPost((current) => ({ ...current, body: nextBody }));
+    window.requestAnimationFrame(() => {
+      textarea?.focus();
+      const selectionStart = start + prefix.length;
+      const selectionEnd = selectionStart + selected.length;
+      textarea?.setSelectionRange(selectionStart, selectionEnd);
+    });
+  }
+
+  function formatBullets() {
+    const textarea = document.getElementById("post-body") as HTMLTextAreaElement | null;
+    const start = textarea?.selectionStart ?? post.body.length;
+    const end = textarea?.selectionEnd ?? post.body.length;
+    const selected = post.body.slice(start, end) || "First item\nSecond item";
+    const bulleted = selected
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => line.startsWith("- ") ? line : `- ${line}`)
+      .join("\n");
+    const nextBody = `${post.body.slice(0, start)}${bulleted}${post.body.slice(end)}`;
+    setPost((current) => ({ ...current, body: nextBody }));
+    window.requestAnimationFrame(() => {
+      textarea?.focus();
+      textarea?.setSelectionRange(start, start + bulleted.length);
+    });
+  }
+
+  function formatLink() {
+    const textarea = document.getElementById("post-body") as HTMLTextAreaElement | null;
+    const start = textarea?.selectionStart ?? post.body.length;
+    const end = textarea?.selectionEnd ?? post.body.length;
+    const selected = post.body.slice(start, end) || "link text";
+    const next = `[${selected}](https://example.com)`;
+    const nextBody = `${post.body.slice(0, start)}${next}${post.body.slice(end)}`;
+    setPost((current) => ({ ...current, body: nextBody }));
+    window.requestAnimationFrame(() => {
+      textarea?.focus();
+      const urlStart = start + selected.length + 3;
+      textarea?.setSelectionRange(urlStart, urlStart + "https://example.com".length);
+    });
+  }
+
   async function deleteDraft(slug: string, title: string) {
     const confirmed = window.confirm(`Delete draft "${title}"?`);
     if (!confirmed) return;
@@ -422,7 +471,24 @@ export function AdminPanel() {
           </label>
           <label className="field">
             Post
-            <textarea value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} placeholder="Write the update here..." />
+            <div className="format-toolbar" aria-label="Text formatting">
+              <button type="button" title="Bold" onClick={() => formatSelection("**", "**", "bold text")}>
+                <Bold size={16} aria-hidden />
+              </button>
+              <button type="button" title="Italic" onClick={() => formatSelection("_", "_", "italic text")}>
+                <Italic size={16} aria-hidden />
+              </button>
+              <button type="button" title="Underline" onClick={() => formatSelection("<u>", "</u>", "underlined text")}>
+                <Underline size={16} aria-hidden />
+              </button>
+              <button type="button" title="Bulleted list" onClick={formatBullets}>
+                <List size={16} aria-hidden />
+              </button>
+              <button type="button" title="Link" onClick={formatLink}>
+                <LinkIcon size={16} aria-hidden />
+              </button>
+            </div>
+            <textarea id="post-body" value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} placeholder="Write the update here..." />
           </label>
           <label className="field spotify-field">
             Spotify song or playlist link
