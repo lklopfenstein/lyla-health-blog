@@ -422,9 +422,9 @@ h1 {
 
 .subscribe {
   display: grid;
-  grid-template-columns: minmax(220px, 0.8fr) minmax(280px, 1.2fr);
+  grid-template-columns: minmax(220px, 0.72fr) minmax(320px, 1.28fr);
   gap: 18px;
-  align-items: end;
+  align-items: stretch;
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -442,6 +442,54 @@ h1 {
 .subscribe h2 {
   margin: 4px 0 0;
   font-size: clamp(26px, 3vw, 38px);
+}
+
+.subscribe-intro p:not(.eyebrow) {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.notify-options {
+  display: grid;
+  gap: 12px;
+}
+
+.notify-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(230, 215, 195, 0.88);
+  border-radius: 8px;
+  background: rgba(255, 253, 249, 0.82);
+}
+
+.notify-card > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 9px;
+  align-items: center;
+}
+
+.notify-card svg {
+  color: var(--sage-dark);
+}
+
+.notify-card strong {
+  color: var(--ink);
+}
+
+.notify-card span {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.email-card {
+  grid-template-columns: 1fr;
 }
 
 .subscribe-fields {
@@ -871,6 +919,10 @@ h1 {
   }
 
   .subscribe-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .notify-card {
     grid-template-columns: 1fr;
   }
 
