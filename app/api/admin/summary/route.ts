@@ -36,44 +36,49 @@ export async function GET() {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const storageOptions = { allowBundledFallback: false };
-  const subscribers = await readJson("content/subscribers.json", [], storageOptions);
-  const pushSubscribers = await readJson("content/push-subscribers.json", [], storageOptions);
-  const traffic = await readJson<{
-    totalPageViews: number;
-    uniqueVisitors: number;
-    byPath: Record<string, number>;
-    byDay: Record<string, number>;
-    recent: Array<{ path: string; at: string; visitorId?: string }>;
-  }>("content/traffic.json", {
-    totalPageViews: 0,
-    uniqueVisitors: 0,
-    byPath: {},
-    byDay: {},
-    recent: []
-  }, storageOptions);
+  try {
+    const storageOptions = { allowBundledFallback: false };
+    const subscribers = await readJson("content/subscribers.json", [], storageOptions);
+    const pushSubscribers = await readJson("content/push-subscribers.json", [], storageOptions);
+    const traffic = await readJson<{
+      totalPageViews: number;
+      uniqueVisitors: number;
+      byPath: Record<string, number>;
+      byDay: Record<string, number>;
+      recent: Array<{ path: string; at: string; visitorId?: string }>;
+    }>("content/traffic.json", {
+      totalPageViews: 0,
+      uniqueVisitors: 0,
+      byPath: {},
+      byDay: {},
+      recent: []
+    }, storageOptions);
 
-  const posts = await getAllPosts(storageOptions);
+    const posts = await getAllPosts(storageOptions);
 
-  return NextResponse.json({
-    ok: true,
-    subscribers,
-    pushSubscribers,
-    traffic,
-    posts: posts.map((post) => ({
-      slug: post.slug,
-      title: post.title,
-      date: post.date,
-      author: post.author,
-      body: post.body,
-      coverImage: post.coverImage || "",
-      commentCount: post.commentCount || 0,
-      views: Number(traffic.byPath?.[`/posts/${post.slug}`] || 0),
-      source: post.source || "Journal update",
-      legacyCommentCount: post.legacyCommentCount || 0,
-      pinned: Boolean(post.pinned)
-    })),
-    drafts: await getDrafts(),
-    emailReady: Boolean((process.env.BREVO_API_KEY || process.env.RESEND_API_KEY) && process.env.EMAIL_FROM)
-  });
+    return NextResponse.json({
+      ok: true,
+      subscribers,
+      pushSubscribers,
+      traffic,
+      posts: posts.map((post) => ({
+        slug: post.slug,
+        title: post.title,
+        date: post.date,
+        author: post.author,
+        body: post.body,
+        coverImage: post.coverImage || "",
+        commentCount: post.commentCount || 0,
+        views: Number(traffic.byPath?.[`/posts/${post.slug}`] || 0),
+        source: post.source || "Journal update",
+        legacyCommentCount: post.legacyCommentCount || 0,
+        pinned: Boolean(post.pinned)
+      })),
+      drafts: await getDrafts(),
+      emailReady: Boolean((process.env.BREVO_API_KEY || process.env.RESEND_API_KEY) && process.env.EMAIL_FROM)
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not load admin data.";
+    return NextResponse.json({ ok: false, message }, { status: 500 });
+  }
 }

@@ -90,9 +90,17 @@ export function AdminPanel() {
     if (res.ok) {
       setAuthenticated(true);
       setSummary(await res.json());
-    } else {
-      setAuthenticated(false);
+      return;
     }
+    if (res.status === 401) {
+      setAuthenticated(false);
+      setSummary(null);
+      return;
+    }
+
+    const data = await res.json().catch(() => ({}));
+    setAuthenticated(true);
+    setStatus(data.message || "You are signed in, but the admin dashboard could not load. Please try refreshing.");
   }
 
   useEffect(() => {
@@ -114,6 +122,7 @@ export function AdminPanel() {
     }
     setPassword("");
     setStatus("");
+    setAuthenticated(true);
     await loadSummary();
   }
 
