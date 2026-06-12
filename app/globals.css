@@ -656,6 +656,17 @@ h1 {
   font-size: 20px;
 }
 
+.inline-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.spotify-field {
+  margin-top: -4px;
+}
+
 .writer-preview {
   margin-top: 16px;
   border: 1px solid rgba(230, 215, 195, 0.9);
@@ -923,6 +934,10 @@ h1 {
   }
 
   .notify-card {
+    grid-template-columns: 1fr;
+  }
+
+  .inline-field {
     grid-template-columns: 1fr;
   }
 

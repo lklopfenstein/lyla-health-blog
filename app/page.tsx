@@ -31,7 +31,7 @@ export default async function Home() {
           <p className="eyebrow">A home for every update</p>
           <h1>{site.title}</h1>
           <p>
-            A calmer, beautiful place for health updates, photos, songs, comments, and the whole historical archive in one easy home.
+            A quiet place to share updates, photos, songs, and notes with the people who care about Lyla.
           </p>
           <div className="hero-actions">
             <Link className="button primary" href="#updates">

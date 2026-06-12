@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, MessageCircle, Pencil, Save, Send, Trash2, Users } from "lucide-react";
+import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, MessageCircle, Music, Pencil, Save, Send, Trash2, Users } from "lucide-react";
 import { Markdown } from "@/components/Markdown";
 
 type Comment = {
@@ -80,6 +80,7 @@ export function AdminPanel() {
   const [selectedCommentsSlug, setSelectedCommentsSlug] = useState("");
   const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [spotifyUrl, setSpotifyUrl] = useState("");
   const [commentStatus, setCommentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -287,6 +288,24 @@ export function AdminPanel() {
     setStatus("Ready for a new post.");
   }
 
+  function insertSpotifyLink() {
+    const url = spotifyUrl.trim();
+    if (!url) {
+      setStatus("Paste a Spotify link first.");
+      return;
+    }
+    if (!/^https:\/\/open\.spotify\.com\/(track|album|playlist|episode|show)\//.test(url)) {
+      setStatus("That does not look like a Spotify song, album, playlist, episode, or show link.");
+      return;
+    }
+    setPost((current) => ({
+      ...current,
+      body: `${current.body.trim()}\n\n${url}`.trim()
+    }));
+    setSpotifyUrl("");
+    setStatus("Spotify link inserted.");
+  }
+
   async function deleteDraft(slug: string, title: string) {
     const confirmed = window.confirm(`Delete draft "${title}"?`);
     if (!confirmed) return;
@@ -404,6 +423,20 @@ export function AdminPanel() {
           <label className="field">
             Post
             <textarea value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} placeholder="Write the update here..." />
+          </label>
+          <label className="field spotify-field">
+            Spotify song or playlist link
+            <div className="inline-field">
+              <input
+                value={spotifyUrl}
+                onChange={(event) => setSpotifyUrl(event.target.value)}
+                placeholder="Paste a Spotify link here"
+                type="url"
+              />
+              <button className="button" type="button" onClick={insertSpotifyLink}>
+                <Music size={17} aria-hidden /> Insert
+              </button>
+            </div>
           </label>
           {post.body.trim() ? (
             <div className="writer-preview">
