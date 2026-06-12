@@ -325,6 +325,17 @@ h1 {
   margin: 0;
 }
 
+.archive-sentinel {
+  height: 1px;
+}
+
+.archive-loading {
+  margin-top: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .post-page {
   max-width: 860px;
   margin: 0 auto;
@@ -498,6 +509,7 @@ h1 {
   margin: 7px 0 0;
   line-height: 1.65;
   color: var(--muted);
+  white-space: pre-line;
 }
 
 .studio {
