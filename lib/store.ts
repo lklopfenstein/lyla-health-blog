@@ -146,6 +146,10 @@ export async function writeBase64(filePath: string, content: string, message: st
   }
 }
 
+export function publicGitHubUrl(filePath: string) {
+  return `https://raw.githubusercontent.com/${repo}/${branch}/${filePath}`;
+}
+
 export async function writeJson(filePath: string, value: unknown, message: string) {
   await writeText(filePath, `${JSON.stringify(value, null, 2)}\n`, message);
 }

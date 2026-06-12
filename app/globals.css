@@ -610,6 +610,29 @@ h1 {
   font-size: 20px;
 }
 
+.writer-preview {
+  margin-top: 16px;
+  border: 1px solid rgba(230, 215, 195, 0.9);
+  border-radius: 8px;
+  background: #fffdf9;
+  padding: 16px;
+}
+
+.preview-label {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.writer-preview .prose img {
+  max-height: 420px;
+  object-fit: contain;
+  background: white;
+}
+
 .checkbox-field {
   display: flex;
   align-items: center;

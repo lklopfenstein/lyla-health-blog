@@ -5,6 +5,9 @@ import { PostArchive } from "@/components/PostArchive";
 import { Subscribe } from "@/components/Subscribe";
 import { getAllPosts, getSiteMeta } from "@/lib/content";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function formatNumber(value?: number) {
   return new Intl.NumberFormat("en-US").format(value || 0);
 }
@@ -14,9 +17,9 @@ function formatDate(date?: string) {
   return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(date));
 }
 
-export default function Home() {
-  const posts = getAllPosts();
-  const site = getSiteMeta();
+export default async function Home() {
+  const posts = await getAllPosts();
+  const site = await getSiteMeta();
   const latest = posts[0];
   const cover = latest?.coverImage || "";
 

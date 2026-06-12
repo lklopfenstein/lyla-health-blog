@@ -18,11 +18,15 @@ export async function PATCH(request: Request) {
 
   const input = await request.json().catch(() => ({}));
   const slug = cleanSlug(input.slug);
+  const title = String(input.title || "").trim();
   if (!slug) {
     return NextResponse.json({ ok: false, message: "Post slug is required." }, { status: 400 });
   }
+  if (!title) {
+    return NextResponse.json({ ok: false, message: "Please add a title before saving." }, { status: 400 });
+  }
 
-  await writeText(`content/posts/${slug}.md`, markdownFor(input), `Update post: ${String(input.title || slug)}`);
+  await writeText(`content/posts/${slug}.md`, markdownFor({ ...input, title }), `Update post: ${title}`);
   return NextResponse.json({ ok: true, slug });
 }
 

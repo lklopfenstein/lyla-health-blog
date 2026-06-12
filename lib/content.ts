@@ -1,5 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
+import { listFiles, readJson, readText } from "@/lib/store";
 
 export type Post = {
   slug: string;
@@ -13,8 +12,6 @@ export type Post = {
   legacyCommentCount?: number;
   pinned?: boolean;
 };
-
-const postsDir = path.join(process.cwd(), "content", "posts");
 
 function parseFrontmatter(raw: string) {
   if (!raw.startsWith("---")) return { data: {}, body: raw };
@@ -59,14 +56,12 @@ function imageFromBody(markdown: string) {
   return match?.[1];
 }
 
-export function getAllPosts(): Post[] {
-  if (!fs.existsSync(postsDir)) return [];
+export async function getAllPosts(): Promise<Post[]> {
+  const files = (await listFiles("content/posts")).filter((file) => file.endsWith(".md"));
 
-  return fs
-    .readdirSync(postsDir)
-    .filter((file) => file.endsWith(".md"))
-    .map((file) => {
-      const raw = fs.readFileSync(path.join(postsDir, file), "utf8");
+  const posts = await Promise.all(
+    files.map(async (file) => {
+      const raw = await readText(`content/posts/${file}`, "");
       const { data, body } = parseFrontmatter(raw);
       const slug = file.replace(/\.md$/, "");
       const excerpt = stripMarkdown(body).slice(0, 180);
@@ -83,24 +78,26 @@ export function getAllPosts(): Post[] {
         pinned: Boolean(data.pinned)
       };
     })
-    .sort((a, b) => {
-      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
-    });
+  );
+
+  return posts.sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
 }
 
-export function getPost(slug: string) {
-  return getAllPosts().find((post) => post.slug === slug);
+export async function getPost(slug: string) {
+  const posts = await getAllPosts();
+  return posts.find((post) => post.slug === slug);
 }
 
-export function getSiteMeta() {
-  const siteFile = path.join(process.cwd(), "content", "site.json");
-  if (!fs.existsSync(siteFile)) {
-    return { title: "Lyla Klopfenstein", visitsImportedFromPreviousSite: 0 };
-  }
-  return JSON.parse(fs.readFileSync(siteFile, "utf8")) as {
+export async function getSiteMeta() {
+  return readJson("content/site.json", {
+    title: "Lyla Klopfenstein",
+    visitsImportedFromPreviousSite: 0
+  }) as Promise<{
     title: string;
     visitsImportedFromPreviousSite?: number;
     importedAt?: string;
-  };
+  }>;
 }

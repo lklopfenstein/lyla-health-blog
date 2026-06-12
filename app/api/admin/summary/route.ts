@@ -44,11 +44,13 @@ export async function GET() {
     recent: []
   });
 
+  const posts = await getAllPosts();
+
   return NextResponse.json({
     ok: true,
     subscribers,
     traffic,
-    posts: getAllPosts().map((post) => ({
+    posts: posts.map((post) => ({
       slug: post.slug,
       title: post.title,
       date: post.date,

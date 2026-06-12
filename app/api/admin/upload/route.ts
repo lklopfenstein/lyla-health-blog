@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth";
-import { slugify, writeBase64 } from "@/lib/store";
+import { publicGitHubUrl, slugify, writeBase64 } from "@/lib/store";
 
 export async function POST(request: Request) {
   if (!(await isAdmin())) {
@@ -19,5 +19,6 @@ export async function POST(request: Request) {
   }
 
   await writeBase64(filePath, content, `Upload media ${name}`);
-  return NextResponse.json({ ok: true, path: `/${filePath.replace(/^public\//, "")}` });
+  const path = process.env.CONTENT_TOKEN || process.env.GITHUB_TOKEN ? publicGitHubUrl(filePath) : `/${filePath.replace(/^public\//, "")}`;
+  return NextResponse.json({ ok: true, path });
 }

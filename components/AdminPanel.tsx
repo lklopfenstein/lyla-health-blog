@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { BarChart3, FileText, ImagePlus, LockKeyhole, LogOut, Mail, MessageCircle, Pencil, Save, Send, Trash2, Users } from "lucide-react";
+import { Markdown } from "@/components/Markdown";
 
 type Comment = {
   id: string;
@@ -36,17 +37,19 @@ type Summary = {
   emailReady: boolean;
 };
 
-const emptyPost = {
-  title: "",
-  date: new Date().toISOString().slice(0, 10),
-  author: "Lee Klopfenstein",
-  coverImage: "",
-  body: "",
-  source: "New update",
-  legacyCommentCount: 0,
-  pinned: false,
-  notify: true
-};
+function createEmptyPost() {
+  return {
+    title: "",
+    date: new Date().toISOString().slice(0, 10),
+    author: "Lee Klopfenstein",
+    coverImage: "",
+    body: "",
+    source: "New update",
+    legacyCommentCount: 0,
+    pinned: false,
+    notify: true
+  };
+}
 
 async function toBase64(file: File) {
   const buffer = await file.arrayBuffer();
@@ -61,7 +64,7 @@ export function AdminPanel() {
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [summary, setSummary] = useState<Summary | null>(null);
-  const [post, setPost] = useState(emptyPost);
+  const [post, setPost] = useState(createEmptyPost);
   const [editingSlug, setEditingSlug] = useState("");
   const [selectedCommentsSlug, setSelectedCommentsSlug] = useState("");
   const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
@@ -107,13 +110,25 @@ export function AdminPanel() {
   }
 
   async function save(kind: "draft" | "post") {
+    const title = post.title.trim();
+    const body = post.body.trim();
+    if (!title) {
+      setStatus("Please add a title before saving.");
+      return;
+    }
+    if (kind === "post" && !body) {
+      setStatus("Please write something before publishing.");
+      return;
+    }
+
     setBusy(true);
     setStatus(editingSlug && kind === "post" ? "Saving changes..." : kind === "draft" ? "Saving draft..." : "Publishing...");
     const isEditingPost = Boolean(editingSlug && kind === "post");
+    const payload = { ...post, title, body };
     const res = await fetch(isEditingPost ? "/api/admin/posts" : "/api/admin/publish", {
       method: isEditingPost ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(isEditingPost ? { ...post, slug: editingSlug } : { ...post, kind })
+      body: JSON.stringify(isEditingPost ? { ...payload, slug: editingSlug } : { ...payload, kind })
     });
     const data = await res.json();
     setBusy(false);
@@ -124,10 +139,18 @@ export function AdminPanel() {
     if (isEditingPost) {
       setStatus("Post updated.");
       setEditingSlug("");
-      setPost(emptyPost);
+      setPost(createEmptyPost());
     } else {
-      setStatus(kind === "draft" ? "Draft saved." : data.email?.skipped ? "Published. Email sending is not connected yet." : `Published and emailed ${data.email.sent} subscriber(s).`);
-      if (kind === "post") setPost(emptyPost);
+      if (kind === "draft") {
+        setStatus("Draft saved.");
+      } else if (data.email?.skipped) {
+        setStatus("Published. Email sending is not connected yet.");
+      } else if (data.email?.failed) {
+        setStatus(`Published and emailed ${data.email.sent} subscriber(s). ${data.email.failed} email(s) failed.`);
+      } else {
+        setStatus(`Published and emailed ${data.email?.sent || 0} subscriber(s).`);
+      }
+      if (kind === "post") setPost(createEmptyPost());
     }
     await loadSummary();
   }
@@ -150,7 +173,7 @@ export function AdminPanel() {
     }
     if (editingSlug === slug) {
       setEditingSlug("");
-      setPost(emptyPost);
+      setPost(createEmptyPost());
     }
     if (selectedCommentsSlug === slug) {
       setSelectedCommentsSlug("");
@@ -232,7 +255,7 @@ export function AdminPanel() {
 
   function newPost() {
     setEditingSlug("");
-    setPost(emptyPost);
+    setPost(createEmptyPost());
     setStatus("Ready for a new post.");
   }
 
@@ -330,6 +353,12 @@ export function AdminPanel() {
             Post
             <textarea value={post.body} onChange={(event) => setPost({ ...post, body: event.target.value })} placeholder="Write the update here..." />
           </label>
+          {post.body.trim() ? (
+            <div className="writer-preview">
+              <div className="preview-label">Preview</div>
+              <Markdown body={post.body} />
+            </div>
+          ) : null}
           <div className="studio-actions writer-actions">
             <label className="button image-button">
               <ImagePlus size={17} aria-hidden /> Add pictures/videos
