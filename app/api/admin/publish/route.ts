@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
+import webpush from "web-push";
 import { isAdmin } from "@/lib/auth";
 import { readJson, slugify, writeJson, writeText } from "@/lib/store";
 
 type Subscriber = {
   email: string;
   name: string;
+};
+
+type PushSubscriptionRecord = {
+  endpoint: string;
+  subscription: webpush.PushSubscription;
 };
 
 function escapeHtml(value: string) {
@@ -67,6 +73,36 @@ async function sendNotifications(post: { title: string; slug: string; excerpt: s
   return { sent, failed, skipped: false, total: subscribers.length };
 }
 
+async function sendPushNotifications(post: { title: string; slug: string; excerpt: string; siteUrl: string }) {
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  if (!publicKey || !privateKey) return { sent: 0, failed: 0, skipped: true, total: 0 };
+
+  webpush.setVapidDetails(process.env.VAPID_SUBJECT || "mailto:lklopfenstein@gmail.com", publicKey, privateKey);
+
+  const subscriptions = await readJson<PushSubscriptionRecord[]>("content/push-subscribers.json", []);
+  let sent = 0;
+  let failed = 0;
+  const payload = JSON.stringify({
+    title: `New update: ${post.title}`,
+    body: post.excerpt || "A new update has been posted.",
+    url: `${post.siteUrl}/posts/${post.slug}`
+  });
+
+  await Promise.all(
+    subscriptions.map(async (item) => {
+      try {
+        await webpush.sendNotification(item.subscription, payload);
+        sent += 1;
+      } catch {
+        failed += 1;
+      }
+    })
+  );
+
+  return { sent, failed, skipped: false, total: subscriptions.length };
+}
+
 export async function POST(request: Request) {
   if (!(await isAdmin())) {
     return NextResponse.json({ ok: false }, { status: 401 });
@@ -92,12 +128,14 @@ export async function POST(request: Request) {
     await writeJson(`content/comments/${slug}.json`, [], `Create comment thread ${slug}`);
   }
 
-  const email = kind === "post" && input.notify ? await sendNotifications({
+  const postInfo = {
     title,
     slug,
     excerpt: String(input.body || "").replace(/\s+/g, " ").slice(0, 180),
     siteUrl: process.env.SITE_URL || new URL(request.url).origin
-  }) : { sent: 0, skipped: true };
+  };
+  const email = kind === "post" && input.notify ? await sendNotifications(postInfo) : { sent: 0, skipped: true };
+  const push = kind === "post" ? await sendPushNotifications(postInfo) : { sent: 0, failed: 0, skipped: true, total: 0 };
 
-  return NextResponse.json({ ok: true, slug, email });
+  return NextResponse.json({ ok: true, slug, email, push });
 }

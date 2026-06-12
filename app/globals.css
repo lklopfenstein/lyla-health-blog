@@ -533,15 +533,13 @@ h1 {
 
 .admin-metrics {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 16px;
 }
 
 .studio-grid {
-  display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
-  gap: 16px;
+  display: block;
 }
 
 .writer-shell {
@@ -633,6 +631,39 @@ h1 {
   background: white;
 }
 
+.staged-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.staged-media {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.staged-media img,
+.staged-media video {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.staged-media span {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  border-radius: 999px;
+  padding: 5px 8px;
+  background: rgba(255, 250, 243, 0.92);
+  color: var(--sage-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
 .checkbox-field {
   display: flex;
   align-items: center;
@@ -680,6 +711,7 @@ h1 {
 .draft-list,
 .manage-list {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 9px;
   margin-bottom: 24px;
 }
@@ -706,9 +738,18 @@ h1 {
   overflow-wrap: anywhere;
 }
 
+.draft-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(230, 215, 195, 0.76);
+  padding-bottom: 9px;
+}
+
 .draft-list button {
   border: 0;
-  padding: 0 0 10px;
+  padding: 0;
   background: transparent;
   color: var(--ink);
   text-align: left;
@@ -726,9 +767,23 @@ h1 {
   gap: 10px;
 }
 
+.manage-item {
+  min-height: 72px;
+  border: 1px solid rgba(230, 215, 195, 0.82);
+  border-radius: 8px;
+  padding: 12px;
+  background: rgba(255, 253, 249, 0.82);
+}
+
+.manage-item strong {
+  display: block;
+  margin-bottom: 5px;
+  line-height: 1.2;
+}
+
 .manage-item.active {
-  border-left: 3px solid var(--rose);
-  padding-left: 10px;
+  border-color: var(--rose);
+  box-shadow: 0 8px 24px rgba(168, 82, 90, 0.12);
 }
 
 .manage-actions {
@@ -756,6 +811,13 @@ h1 {
 .icon-action.danger:hover {
   border-color: #b42318;
   color: #b42318;
+}
+
+.free-notify {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .comment-manager {

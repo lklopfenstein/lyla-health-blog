@@ -18,6 +18,8 @@ type EditablePost = {
   author: string;
   body: string;
   coverImage: string;
+  commentCount: number;
+  views: number;
   source: string;
   legacyCommentCount: number;
   pinned: boolean;
@@ -25,6 +27,7 @@ type EditablePost = {
 
 type Summary = {
   subscribers: Array<{ email: string; name: string; createdAt: string }>;
+  pushSubscribers: Array<{ endpoint: string; createdAt: string }>;
   traffic: {
     totalPageViews: number;
     uniqueVisitors: number;
@@ -35,6 +38,14 @@ type Summary = {
   posts: EditablePost[];
   drafts: Array<{ slug: string; title: string; date: string; body: string; coverImage: string }>;
   emailReady: boolean;
+};
+
+type MediaItem = {
+  id: string;
+  name: string;
+  previewUrl: string;
+  type: "image" | "video";
+  status: "uploading" | "ready" | "failed";
 };
 
 function createEmptyPost() {
@@ -68,6 +79,7 @@ export function AdminPanel() {
   const [editingSlug, setEditingSlug] = useState("");
   const [selectedCommentsSlug, setSelectedCommentsSlug] = useState("");
   const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [commentStatus, setCommentStatus] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -140,6 +152,7 @@ export function AdminPanel() {
       setStatus("Post updated.");
       setEditingSlug("");
       setPost(createEmptyPost());
+      setMediaItems([]);
     } else {
       if (kind === "draft") {
         setStatus("Draft saved.");
@@ -150,7 +163,10 @@ export function AdminPanel() {
       } else {
         setStatus(`Published and emailed ${data.email?.sent || 0} subscriber(s).`);
       }
-      if (kind === "post") setPost(createEmptyPost());
+      if (kind === "post") {
+        setPost(createEmptyPost());
+        setMediaItems([]);
+      }
     }
     await loadSummary();
   }
@@ -174,6 +190,7 @@ export function AdminPanel() {
     if (editingSlug === slug) {
       setEditingSlug("");
       setPost(createEmptyPost());
+      setMediaItems([]);
     }
     if (selectedCommentsSlug === slug) {
       setSelectedCommentsSlug("");
@@ -188,9 +205,17 @@ export function AdminPanel() {
     if (!files.length) return;
     setBusy(true);
     setStatus(files.length === 1 ? "Uploading media..." : `Uploading ${files.length} files...`);
-    const inserts: string[] = [];
-    let firstImage = "";
+    const staged = files.map((file) => ({
+      id: `${file.name}-${file.size}-${crypto.randomUUID()}`,
+      name: file.name,
+      previewUrl: URL.createObjectURL(file),
+      type: file.type.startsWith("video/") ? "video" as const : "image" as const,
+      status: "uploading" as const
+    }));
+    setMediaItems((current) => [...staged, ...current]);
+
     for (const file of files) {
+      const item = staged.find((candidate) => candidate.name === file.name);
       const res = await fetch("/api/admin/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -198,25 +223,25 @@ export function AdminPanel() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setBusy(false);
+        if (item) {
+          setMediaItems((current) => current.map((media) => media.id === item.id ? { ...media, status: "failed" } : media));
+        }
         setStatus(data.message || "Media upload failed.");
-        event.currentTarget.value = "";
-        return;
+        continue;
       }
-      if (file.type.startsWith("video/")) {
-        inserts.push(`[Video: ${file.name}](${data.path})`);
-      } else {
-        inserts.push(`![${file.name}](${data.path})`);
-        if (!firstImage) firstImage = data.path;
+      if (item) {
+        setMediaItems((current) => current.map((media) => media.id === item.id ? { ...media, status: "ready" } : media));
       }
+      const isVideo = file.type.startsWith("video/");
+      const insert = isVideo ? `[Video: ${file.name}](${data.path})` : `![${file.name}](${data.path})`;
+      setPost((current) => ({
+        ...current,
+        coverImage: current.coverImage || (isVideo ? "" : data.path),
+        body: `${current.body.trim()}\n\n${insert}`.trim()
+      }));
     }
     setBusy(false);
     event.currentTarget.value = "";
-    setPost((current) => ({
-      ...current,
-      coverImage: current.coverImage || firstImage,
-      body: `${current.body.trim()}\n\n${inserts.join("\n\n")}`.trim()
-    }));
     setStatus(files.length === 1 ? "Media inserted." : "Media inserted.");
   }
 
@@ -233,6 +258,7 @@ export function AdminPanel() {
       notify: true
     });
     setEditingSlug("");
+    setMediaItems([]);
     setStatus(`Loaded draft: ${draft.title}`);
   }
 
@@ -249,6 +275,7 @@ export function AdminPanel() {
       notify: false
     });
     setEditingSlug(item.slug);
+    setMediaItems([]);
     setStatus(`Editing: ${item.title}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -256,7 +283,28 @@ export function AdminPanel() {
   function newPost() {
     setEditingSlug("");
     setPost(createEmptyPost());
+    setMediaItems([]);
     setStatus("Ready for a new post.");
+  }
+
+  async function deleteDraft(slug: string, title: string) {
+    const confirmed = window.confirm(`Delete draft "${title}"?`);
+    if (!confirmed) return;
+    setBusy(true);
+    setStatus("Deleting draft...");
+    const res = await fetch("/api/admin/drafts", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug })
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setStatus(data.message || "Could not delete draft.");
+      return;
+    }
+    setStatus("Draft deleted.");
+    await loadSummary();
   }
 
   async function loadComments(slug: string) {
@@ -336,6 +384,10 @@ export function AdminPanel() {
           <strong>{summary?.subscribers.length || 0}</strong>
           <span>email subscribers</span>
         </div>
+        <div className="stat">
+          <strong>{summary?.pushSubscribers.length || 0}</strong>
+          <span>browser notification subscribers</span>
+        </div>
       </div>
 
       <div className="writer-shell">
@@ -376,6 +428,16 @@ export function AdminPanel() {
               </button>
             ) : null}
           </div>
+          {mediaItems.length ? (
+            <div className="staged-media-grid" aria-label="Uploaded media">
+              {mediaItems.map((item) => (
+                <div className="staged-media" key={item.id}>
+                  {item.type === "video" ? <video src={item.previewUrl} controls /> : <img src={item.previewUrl} alt="" />}
+                  <span>{item.status === "uploading" ? "Uploading..." : item.status === "failed" ? "Upload failed" : "Inserted"}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
           {!editingSlug ? (
             <label className="field checkbox-field notify-field">
               <input checked={post.notify} onChange={(event) => setPost({ ...post, notify: event.target.checked })} type="checkbox" />
@@ -394,10 +456,15 @@ export function AdminPanel() {
           <div className="draft-list">
             {summary?.drafts.length ? (
               summary.drafts.map((draft) => (
-                <button key={draft.slug} type="button" onClick={() => loadDraft(draft)}>
-                  <strong>{draft.title}</strong>
-                  <span>{draft.body.slice(0, 120) || "No body yet"}</span>
-                </button>
+                <div key={draft.slug} className="draft-item">
+                  <button type="button" onClick={() => loadDraft(draft)}>
+                    <strong>{draft.title}</strong>
+                    <span>{draft.body.slice(0, 120) || "No body yet"}</span>
+                  </button>
+                  <button className="icon-action danger" type="button" title="Delete draft" onClick={() => deleteDraft(draft.slug, draft.title)}>
+                    <Trash2 size={16} aria-hidden />
+                  </button>
+                </div>
               ))
             ) : (
             <p className="empty-note">No saved drafts yet.</p>
@@ -411,7 +478,7 @@ export function AdminPanel() {
               <div key={item.slug} className={editingSlug === item.slug ? "manage-item active" : "manage-item"}>
                 <div>
                   <strong>{item.title}</strong>
-                  <span>{new Date(item.date).toLocaleDateString()}</span>
+                  <span>{new Date(item.date).toLocaleDateString()} · {item.views} view{item.views === 1 ? "" : "s"} · {item.commentCount} comment{item.commentCount === 1 ? "" : "s"}</span>
                 </div>
                 <div className="manage-actions">
                   <button className="icon-action" type="button" title="Edit post" onClick={() => editPublishedPost(item)}>

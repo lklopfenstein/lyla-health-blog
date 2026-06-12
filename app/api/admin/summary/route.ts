@@ -36,7 +36,14 @@ export async function GET() {
   }
 
   const subscribers = await readJson("content/subscribers.json", []);
-  const traffic = await readJson("content/traffic.json", {
+  const pushSubscribers = await readJson("content/push-subscribers.json", []);
+  const traffic = await readJson<{
+    totalPageViews: number;
+    uniqueVisitors: number;
+    byPath: Record<string, number>;
+    byDay: Record<string, number>;
+    recent: Array<{ path: string; at: string; visitorId?: string }>;
+  }>("content/traffic.json", {
     totalPageViews: 0,
     uniqueVisitors: 0,
     byPath: {},
@@ -49,6 +56,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     subscribers,
+    pushSubscribers,
     traffic,
     posts: posts.map((post) => ({
       slug: post.slug,
@@ -57,6 +65,8 @@ export async function GET() {
       author: post.author,
       body: post.body,
       coverImage: post.coverImage || "",
+      commentCount: post.commentCount || 0,
+      views: Number(traffic.byPath?.[`/posts/${post.slug}`] || 0),
       source: post.source || "Journal update",
       legacyCommentCount: post.legacyCommentCount || 0,
       pinned: Boolean(post.pinned)

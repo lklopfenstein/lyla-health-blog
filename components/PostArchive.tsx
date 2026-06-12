@@ -60,7 +60,7 @@ export function PostArchive({ posts }: { posts: Post[] }) {
         </div>
         <div className="post-grid">
           {visiblePosts.map((post) => {
-            const commentCount = post.legacyCommentCount || 0;
+            const commentCount = post.commentCount ?? post.legacyCommentCount ?? 0;
             return (
             <Link
               className="post-card"

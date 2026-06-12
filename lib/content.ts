@@ -8,6 +8,7 @@ export type Post = {
   body: string;
   excerpt: string;
   coverImage?: string;
+  commentCount?: number;
   source?: string;
   legacyCommentCount?: number;
   pinned?: boolean;
@@ -65,6 +66,8 @@ export async function getAllPosts(): Promise<Post[]> {
       const { data, body } = parseFrontmatter(raw);
       const slug = file.replace(/\.md$/, "");
       const excerpt = stripMarkdown(body).slice(0, 180);
+      const comments = await readJson<unknown[]>(`content/comments/${slug}.json`, []);
+      const legacyCommentCount = Number(data.legacyCommentCount || data.commentsImported || 0);
       return {
         slug,
         title: String(data.title || "Update"),
@@ -73,8 +76,9 @@ export async function getAllPosts(): Promise<Post[]> {
         body,
         excerpt,
         coverImage: String(data.coverImage || imageFromBody(body) || ""),
+        commentCount: Math.max(legacyCommentCount, comments.length),
         source: String(data.source || ""),
-        legacyCommentCount: Number(data.legacyCommentCount || data.commentsImported || 0),
+        legacyCommentCount,
         pinned: Boolean(data.pinned)
       };
     })

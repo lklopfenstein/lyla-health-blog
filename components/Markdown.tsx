@@ -39,7 +39,7 @@ function VideoEmbed({ url }: { url: string }) {
 }
 
 function inline(text: string) {
-  const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|https?:\/\/[^\s]+)/g);
+  const parts = text.split(/(!?\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|_[^_]+_|(?:https?:\/\/|www\.)[^\s]+)/g);
   return parts.map((part, index) => {
     const image = part.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (image) return <img key={index} src={image[2]} alt={image[1]} loading="lazy" />;
@@ -61,11 +61,12 @@ function inline(text: string) {
       );
     }
 
-    if (/^https?:\/\//.test(part)) {
-      if (spotifyEmbedUrl(part)) return <SpotifyEmbed key={index} url={part} />;
-      if (isVideoUrl(part)) return <VideoEmbed key={index} url={part} />;
+    if (/^(https?:\/\/|www\.)/.test(part)) {
+      const href = part.startsWith("www.") ? `https://${part}` : part;
+      if (spotifyEmbedUrl(href)) return <SpotifyEmbed key={index} url={href} />;
+      if (isVideoUrl(href)) return <VideoEmbed key={index} url={href} />;
       return (
-        <a key={index} href={part} target="_blank" rel="noreferrer">
+        <a key={index} href={href} target="_blank" rel="noreferrer">
           {part}
         </a>
       );
