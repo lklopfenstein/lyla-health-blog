@@ -1,5 +1,5 @@
 ---
-title: "Untitled draft"
+title: "NEW TITLE"
 date: "2026-06-12T12:00:00.000Z"
 author: "Lee Klopfenstein"
 source: "New update"
