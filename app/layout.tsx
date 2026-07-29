@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Lora } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { TrafficTracker } from "@/components/TrafficTracker";
 import "./globals.css";
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`${inter.variable} ${lora.variable}`}>
         <TrafficTracker />
         {children}
+        <Analytics />
       </body>
     </html>
   );
